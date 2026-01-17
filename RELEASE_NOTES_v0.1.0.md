@@ -1,0 +1,103 @@
+# Release Notes: v0.1.0
+
+**Release Date:** 2026-01-17
+
+## Highlights
+
+Initial release of Multi-Agent Spec - a specification for defining multi-agent AI systems with platform-agnostic agent definitions and deployment configurations.
+
+## What's New
+
+### JSON Schemas
+
+- **Agent Schema** (`schema/agent/agent.schema.json`): Define individual agents with capabilities, tools, and instructions using Hugo-compatible Markdown with YAML front matter
+- **Team Schema** (`schema/orchestration/team.schema.json`): Define agent teams with orchestration patterns (sequential, parallel, orchestrated)
+- **Deployment Schema** (`schema/deployment/deployment.schema.json`): Define target platforms and configurations
+
+### Go SDK
+
+- Canonical types for Agent, Team, and Deployment
+- Model mappings for Claude Code, Kiro CLI, and AWS Bedrock
+- Tool mappings for Kiro CLI and AgentKit
+- Builder pattern for constructing agents and teams
+- Full test coverage (44 tests)
+
+### Python SDK
+
+- Pydantic models for Agent, Team, and Deployment
+- Type-safe configuration building
+
+### TypeScript SDK
+
+- Zod schemas for runtime validation
+- TypeScript type definitions
+
+### Example: Stats Agent Team
+
+Complete multi-platform example demonstrating:
+
+- Canonical agent definitions in Markdown
+- Claude Code sub-agents (`.claude/agents/`)
+- Kiro CLI agents (`plugins/kiro/agents/`)
+- AgentKit local config (`plugins/agentkit/`)
+- AWS CDK deployment (`cdk/`)
+
+## Supported Platforms
+
+| Platform | Priority | Output Format |
+|----------|----------|---------------|
+| Claude Code | P1 | Markdown |
+| Kiro CLI | P1 | JSON |
+| AWS AgentCore | P1 | CDK/Pulumi |
+| AgentKit Local | P1 | JSON |
+
+## Model Mappings
+
+| Canonical | Claude Code | Kiro CLI | AWS Bedrock |
+|-----------|-------------|----------|-------------|
+| `haiku` | `haiku` | `claude-haiku-35` | `anthropic.claude-3-haiku-*` |
+| `sonnet` | `sonnet` | `claude-sonnet-4` | `anthropic.claude-3-5-sonnet-*` |
+| `opus` | `opus` | `claude-opus-4` | `anthropic.claude-3-opus-*` |
+
+## Tool Mappings
+
+| Canonical | Kiro CLI | AgentKit |
+|-----------|----------|----------|
+| `WebSearch` | `web_search` | `shell` |
+| `WebFetch` | `web_fetch` | `shell` |
+| `Read` | `read` | `read` |
+| `Write` | `write` | `write` |
+| `Glob` | `glob` | `glob` |
+| `Grep` | `grep` | `grep` |
+| `Bash` | `bash` | `shell` |
+| `Edit` | `edit` | `write` |
+| `Task` | `task` | `shell` |
+
+## Installation
+
+### Go
+
+```bash
+go get github.com/agentplexus/multi-agent-spec/sdk/go@v0.1.0
+```
+
+### Python
+
+```bash
+pip install multi-agent-spec
+```
+
+### TypeScript
+
+```bash
+npm install @agentplexus/multi-agent-spec
+```
+
+## Related Projects
+
+- [aiassistkit](https://github.com/agentplexus/aiassistkit) - Agent generation and deployment tooling
+- [agentkit](https://github.com/agentplexus/agentkit) - Multi-platform agent runtime
+
+## License
+
+MIT
