@@ -4,9 +4,9 @@ package multiagentspec
 type WorkflowType string
 
 const (
-	WorkflowSequential  WorkflowType = "sequential"
-	WorkflowParallel    WorkflowType = "parallel"
-	WorkflowDAG         WorkflowType = "dag"
+	WorkflowSequential   WorkflowType = "sequential"
+	WorkflowParallel     WorkflowType = "parallel"
+	WorkflowDAG          WorkflowType = "dag"
 	WorkflowOrchestrated WorkflowType = "orchestrated"
 )
 
