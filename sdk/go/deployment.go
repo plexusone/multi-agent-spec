@@ -237,10 +237,10 @@ type CrewAIConfig struct {
 
 // AutoGenConfig is the configuration for Microsoft AutoGen deployment.
 type AutoGenConfig struct {
-	Model                    string                  `json:"model,omitempty"`
-	HumanInputMode           string                  `json:"humanInputMode,omitempty"`
-	MaxConsecutiveAutoReply  int                     `json:"maxConsecutiveAutoReply,omitempty"`
-	CodeExecutionConfig      *CodeExecutionConfig    `json:"codeExecutionConfig,omitempty"`
+	Model                   string               `json:"model,omitempty"`
+	HumanInputMode          string               `json:"humanInputMode,omitempty"`
+	MaxConsecutiveAutoReply int                  `json:"maxConsecutiveAutoReply,omitempty"`
+	CodeExecutionConfig     *CodeExecutionConfig `json:"codeExecutionConfig,omitempty"`
 }
 
 // CodeExecutionConfig holds AutoGen code execution settings.
