@@ -2,6 +2,7 @@
   "ir_version": "1.0",
   "project": "multi-agent-spec/sdk/go",
   "repository": "https://github.com/agentplexus/multi-agent-spec",
+  "tag_path": "sdk/go",
   "versioning": "semver",
   "commit_convention": "conventional",
   "maintainers": ["agentplexus"],
