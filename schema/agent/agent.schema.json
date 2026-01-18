@@ -42,6 +42,13 @@
       },
       "description": "Other agents this agent depends on or can spawn"
     },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "External tools or binaries required (e.g., go, git, golangci-lint)"
+    },
     "instructions": {
       "type": "string",
       "description": "System prompt / instructions for the agent"

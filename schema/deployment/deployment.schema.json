@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/deployment/deployment.schema.json",
   "title": "Multi-Agent Spec - Deployment Definition",
-  "description": "Schema for defining deployment targets and configurations for a multi-agent team",
+  "description": "Schema for defining deployment targets and runtime configurations for a multi-agent team",
   "type": "object",
   "required": ["team", "targets"],
   "properties": {
@@ -32,7 +32,11 @@
           "type": "string",
           "enum": [
             "claude-code",
+            "gemini-cli",
             "kiro-cli",
+            "adk-go",
+            "crewai",
+            "autogen",
             "aws-agentcore",
             "aws-eks",
             "azure-aks",
@@ -42,6 +46,12 @@
             "agentkit-local"
           ],
           "description": "Target platform for deployment"
+        },
+        "mode": {
+          "type": "string",
+          "enum": ["single-process", "multi-process", "distributed", "serverless"],
+          "default": "single-process",
+          "description": "Deployment mode affecting runtime behavior"
         },
         "priority": {
           "type": "string",
@@ -53,15 +63,174 @@
           "type": "string",
           "description": "Output directory for generated deployment artifacts"
         },
+        "runtime": {
+          "$ref": "#/$defs/runtimeConfig",
+          "description": "Runtime configuration for workflow execution"
+        },
         "config": {
           "oneOf": [
             { "$ref": "#/$defs/claudeCodeConfig" },
+            { "$ref": "#/$defs/geminiCliConfig" },
             { "$ref": "#/$defs/kiroCliConfig" },
+            { "$ref": "#/$defs/adkGoConfig" },
+            { "$ref": "#/$defs/crewaiConfig" },
+            { "$ref": "#/$defs/autogenConfig" },
             { "$ref": "#/$defs/awsAgentCoreConfig" },
             { "$ref": "#/$defs/kubernetesConfig" },
             { "$ref": "#/$defs/dockerComposeConfig" }
           ],
           "description": "Platform-specific configuration"
+        }
+      }
+    },
+    "runtimeConfig": {
+      "type": "object",
+      "description": "Runtime configuration for workflow execution",
+      "properties": {
+        "defaults": {
+          "$ref": "#/$defs/stepRuntime",
+          "description": "Default runtime settings for all steps"
+        },
+        "steps": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/stepRuntime"
+          },
+          "description": "Per-step runtime overrides keyed by step name"
+        },
+        "observability": {
+          "$ref": "#/$defs/observabilityConfig",
+          "description": "Observability and monitoring settings"
+        }
+      }
+    },
+    "stepRuntime": {
+      "type": "object",
+      "description": "Runtime settings for a workflow step",
+      "properties": {
+        "timeout": {
+          "type": "string",
+          "pattern": "^\\d+[smh]$",
+          "description": "Step timeout (e.g., 30s, 5m, 1h)"
+        },
+        "retry": {
+          "$ref": "#/$defs/retryPolicy",
+          "description": "Retry policy for step failures"
+        },
+        "condition": {
+          "type": "string",
+          "description": "Condition expression for conditional execution"
+        },
+        "concurrency": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "Max concurrent executions of this step"
+        },
+        "resources": {
+          "$ref": "#/$defs/resourceLimits",
+          "description": "Resource limits for this step"
+        }
+      }
+    },
+    "retryPolicy": {
+      "type": "object",
+      "description": "Retry policy for handling step failures",
+      "properties": {
+        "max_attempts": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "default": 3,
+          "description": "Maximum number of retry attempts"
+        },
+        "backoff": {
+          "type": "string",
+          "enum": ["fixed", "exponential", "linear"],
+          "default": "exponential",
+          "description": "Backoff strategy between retries"
+        },
+        "initial_delay": {
+          "type": "string",
+          "pattern": "^\\d+[smh]$",
+          "default": "1s",
+          "description": "Initial delay before first retry"
+        },
+        "max_delay": {
+          "type": "string",
+          "pattern": "^\\d+[smh]$",
+          "default": "1m",
+          "description": "Maximum delay between retries"
+        },
+        "retryable_errors": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Error types that should trigger retry (empty = all errors)"
+        }
+      }
+    },
+    "resourceLimits": {
+      "type": "object",
+      "description": "Resource limits for step execution",
+      "properties": {
+        "cpu": {
+          "type": "string",
+          "description": "CPU limit (e.g., 500m, 2)"
+        },
+        "memory": {
+          "type": "string",
+          "description": "Memory limit (e.g., 512Mi, 2Gi)"
+        },
+        "gpu": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of GPUs required"
+        }
+      }
+    },
+    "observabilityConfig": {
+      "type": "object",
+      "description": "Observability and monitoring configuration",
+      "properties": {
+        "tracing": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "exporter": {
+              "type": "string",
+              "enum": ["otlp", "jaeger", "zipkin", "console"],
+              "default": "otlp"
+            },
+            "endpoint": { "type": "string" },
+            "sample_rate": { "type": "number", "minimum": 0, "maximum": 1, "default": 1.0 }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "exporter": {
+              "type": "string",
+              "enum": ["prometheus", "otlp", "statsd"],
+              "default": "prometheus"
+            },
+            "endpoint": { "type": "string" }
+          }
+        },
+        "logging": {
+          "type": "object",
+          "properties": {
+            "level": {
+              "type": "string",
+              "enum": ["debug", "info", "warn", "error"],
+              "default": "info"
+            },
+            "format": {
+              "type": "string",
+              "enum": ["json", "text"],
+              "default": "json"
+            }
+          }
         }
       }
     },
@@ -159,6 +328,113 @@
           "type": "string",
           "enum": ["bridge", "host"],
           "default": "bridge"
+        }
+      }
+    },
+    "geminiCliConfig": {
+      "type": "object",
+      "description": "Configuration for Google Gemini CLI Assistant deployment",
+      "properties": {
+        "platform": { "const": "gemini-cli" },
+        "model": {
+          "type": "string",
+          "default": "gemini-2.0-flash",
+          "description": "Gemini model to use"
+        },
+        "configDir": {
+          "type": "string",
+          "default": ".gemini",
+          "description": "Directory for Gemini configuration"
+        }
+      }
+    },
+    "adkGoConfig": {
+      "type": "object",
+      "description": "Configuration for Google Agent Development Kit (Go) deployment",
+      "properties": {
+        "platform": { "const": "adk-go" },
+        "model": {
+          "type": "string",
+          "default": "gemini-2.0-flash",
+          "description": "Foundation model for agents"
+        },
+        "serverPort": {
+          "type": "integer",
+          "default": 8080,
+          "description": "Port for ADK server"
+        },
+        "sessionStore": {
+          "type": "string",
+          "enum": ["memory", "redis", "firestore"],
+          "default": "memory",
+          "description": "Session storage backend"
+        },
+        "toolRegistry": {
+          "type": "string",
+          "description": "Path to tool registry configuration"
+        }
+      }
+    },
+    "crewaiConfig": {
+      "type": "object",
+      "description": "Configuration for CrewAI deployment",
+      "properties": {
+        "platform": { "const": "crewai" },
+        "model": {
+          "type": "string",
+          "default": "gpt-4",
+          "description": "LLM model for agents"
+        },
+        "verbose": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable verbose output"
+        },
+        "memory": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable agent memory"
+        },
+        "processType": {
+          "type": "string",
+          "enum": ["sequential", "hierarchical"],
+          "default": "sequential",
+          "description": "Crew process type"
+        },
+        "maxIterations": {
+          "type": "integer",
+          "default": 10,
+          "description": "Maximum task iterations"
+        }
+      }
+    },
+    "autogenConfig": {
+      "type": "object",
+      "description": "Configuration for Microsoft AutoGen deployment",
+      "properties": {
+        "platform": { "const": "autogen" },
+        "model": {
+          "type": "string",
+          "default": "gpt-4",
+          "description": "LLM model for agents"
+        },
+        "humanInputMode": {
+          "type": "string",
+          "enum": ["NEVER", "TERMINATE", "ALWAYS"],
+          "default": "NEVER",
+          "description": "When to request human input"
+        },
+        "maxConsecutiveAutoReply": {
+          "type": "integer",
+          "default": 10,
+          "description": "Max consecutive auto-replies"
+        },
+        "codeExecutionConfig": {
+          "type": "object",
+          "properties": {
+            "workDir": { "type": "string", "default": "workspace" },
+            "useDocker": { "type": "boolean", "default": false }
+          }
         }
       }
     }

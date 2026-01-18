@@ -66,32 +66,71 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Step identifier"
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Step identifier (e.g., pm-validation)"
         },
         "agent": {
           "type": "string",
-          "description": "Agent to execute this step"
+          "description": "Agent to execute this step (references agent definition)"
         },
         "depends_on": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Steps that must complete before this step (for dag type)"
+          "description": "Steps that must complete before this step (DAG edges)"
         },
         "inputs": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/port"
           },
-          "description": "Input mappings from previous step outputs"
+          "description": "Data inputs consumed by this step (from upstream outputs)"
         },
         "outputs": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/port"
           },
-          "description": "Named outputs from this step"
+          "description": "Data outputs produced by this step (for downstream consumption)"
+        }
+      }
+    },
+    "port": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Port identifier (e.g., version_recommendation, test_results)"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "object", "array", "file"],
+          "default": "string",
+          "description": "Data type of this port"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of this data"
+        },
+        "required": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether this input is required (inputs only)"
+        },
+        "from": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*\\.[a-z][a-z0-9_]*$",
+          "description": "Source reference as 'step_name.output_name' (inputs only)"
+        },
+        "schema": {
+          "type": "object",
+          "description": "JSON Schema for validating this port's data"
+        },
+        "default": {
+          "description": "Default value if not provided (inputs only)"
         }
       }
     }
