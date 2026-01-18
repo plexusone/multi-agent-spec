@@ -23,7 +23,9 @@ func NewRenderer(w io.Writer) *Renderer {
 }
 
 // Render renders the report using the box template.
+// It automatically sorts teams by DAG order before rendering.
 func (r *Renderer) Render(report *TeamReport) error {
+	report.SortByDAG()
 	return r.renderBox(report)
 }
 

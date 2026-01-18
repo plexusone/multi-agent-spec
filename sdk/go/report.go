@@ -98,6 +98,9 @@ type TeamSection struct {
 	// Model is the LLM model used
 	Model string `json:"model,omitempty"`
 
+	// DependsOn lists the IDs of upstream teams in the DAG
+	DependsOn []string `json:"depends_on,omitempty"`
+
 	// Checks are the validation checks for this team
 	Checks []Check `json:"checks"`
 
@@ -189,6 +192,104 @@ func (r *TeamReport) IsGo() bool {
 		}
 	}
 	return true
+}
+
+// SortByDAG sorts teams in topological order based on DependsOn relationships.
+// Teams with no dependencies appear first, followed by teams whose dependencies
+// have been satisfied. This uses Kahn's algorithm for topological sorting.
+// Teams at the same level are sorted alphabetically by ID for deterministic output.
+// If the DAG has cycles, teams in cycles appear at the end in their original order.
+func (r *TeamReport) SortByDAG() {
+	if len(r.Teams) <= 1 {
+		return
+	}
+
+	// Build ID -> index mapping and in-degree count
+	idToTeam := make(map[string]*TeamSection)
+	inDegree := make(map[string]int)
+
+	for i := range r.Teams {
+		id := r.Teams[i].ID
+		idToTeam[id] = &r.Teams[i]
+		inDegree[id] = 0
+	}
+
+	// Calculate in-degrees (count of dependencies)
+	for i := range r.Teams {
+		for _, dep := range r.Teams[i].DependsOn {
+			if _, exists := idToTeam[dep]; exists {
+				inDegree[r.Teams[i].ID]++
+			}
+		}
+	}
+
+	// Build adjacency list (downstream teams for each team)
+	downstream := make(map[string][]string)
+	for i := range r.Teams {
+		for _, dep := range r.Teams[i].DependsOn {
+			if _, exists := idToTeam[dep]; exists {
+				downstream[dep] = append(downstream[dep], r.Teams[i].ID)
+			}
+		}
+	}
+
+	// Kahn's algorithm: start with teams that have no dependencies
+	// Collect all teams with zero in-degree, sort alphabetically
+	queue := make([]string, 0)
+	for i := range r.Teams {
+		if inDegree[r.Teams[i].ID] == 0 {
+			queue = append(queue, r.Teams[i].ID)
+		}
+	}
+	sortStrings(queue)
+
+	sorted := make([]TeamSection, 0, len(r.Teams))
+	processed := make(map[string]bool)
+
+	for len(queue) > 0 {
+		// Dequeue
+		id := queue[0]
+		queue = queue[1:]
+
+		if processed[id] {
+			continue
+		}
+		processed[id] = true
+
+		sorted = append(sorted, *idToTeam[id])
+
+		// Collect newly ready teams
+		newlyReady := make([]string, 0)
+		for _, downID := range downstream[id] {
+			inDegree[downID]--
+			if inDegree[downID] == 0 {
+				newlyReady = append(newlyReady, downID)
+			}
+		}
+		// Sort and append to maintain alphabetical order at each level
+		sortStrings(newlyReady)
+		queue = append(queue, newlyReady...)
+	}
+
+	// Add any remaining teams (cycles or missing dependencies) at the end
+	for i := range r.Teams {
+		if !processed[r.Teams[i].ID] {
+			sorted = append(sorted, r.Teams[i])
+		}
+	}
+
+	r.Teams = sorted
+}
+
+// sortStrings sorts a slice of strings in place.
+func sortStrings(s []string) {
+	for i := 0; i < len(s)-1; i++ {
+		for j := i + 1; j < len(s); j++ {
+			if s[j] < s[i] {
+				s[i], s[j] = s[j], s[i]
+			}
+		}
+	}
 }
 
 // FinalMessage returns the final status message for display.
