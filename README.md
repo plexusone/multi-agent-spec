@@ -16,7 +16,7 @@ Multi-Agent Spec provides a standardized way to define:
 ┌──────────────────────────────────────────────────────────────────┐
 │                     Definition Layer                             │
 ├──────────────────────────────────────────────────────────────────┤
-│  agents/*.md          │  team.json           │  deployment.json  │
+│  specs/agents/*.md    │  specs/teams/*.json  │  specs/deployments/*.json │
 │  (Markdown + YAML)    │  (Orchestration)     │  (Targets)        │
 └──────────────────────────────────────────────────────────────────┘
                               │
@@ -30,6 +30,44 @@ Multi-Agent Spec provides a standardized way to define:
 │ .claude/   │ plugins/   │ cdk/       │ eks/       │ helm/        │
 │ agents/    │ kiro/      │            │            │              │
 └────────────┴────────────┴────────────┴────────────┴──────────────┘
+```
+
+## Directory Structure
+
+Multi-agent-spec definitions should be organized in a dedicated directory (default: `specs/`) to keep them separate from other project files:
+
+```
+specs/                          # or custom directory name
+├── agents/                     # Agent definitions
+│   ├── orchestrator.md
+│   ├── researcher.md
+│   └── writer.md
+├── teams/                      # Team definitions
+│   └── my-team.json
+└── deployments/                # Deployment configurations
+    └── my-team.json
+```
+
+**Benefits:**
+
+- Clean separation from other project files
+- Tooling can process the entire directory: `genagents --spec-dir=specs/`
+- Portable across repositories
+
+**Directory conventions:**
+
+| Directory | Contents | Format |
+|-----------|----------|--------|
+| `specs/agents/` | Agent definitions | Markdown with YAML frontmatter |
+| `specs/teams/` | Team/workflow definitions | JSON (per `team.schema.json`) |
+| `specs/deployments/` | Deployment targets | JSON (per `deployment.schema.json`) |
+
+For simple projects, files can also be placed at the repository root:
+
+```
+agents/
+team.json
+deployment.json
 ```
 
 ## Schemas
@@ -178,15 +216,18 @@ npm install @agentplexus/multi-agent-spec
 Generate platform-specific agents using `genagents`:
 
 ```bash
-# Generate for Claude Code
-genagents -spec=plugins/spec/agents -output=.claude/agents -format=claude
+# Generate from specs/ directory (recommended)
+genagents --spec-dir=specs/ --output=.claude/agents --format=claude
 
 # Generate for multiple targets
-genagents -spec=plugins/spec/agents \
-  -targets="claude:.claude/agents,kiro:plugins/kiro/agents"
+genagents --spec-dir=specs/ \
+  --targets="claude:.claude/agents,kiro:plugins/kiro/agents"
+
+# Process a custom directory
+genagents --spec-dir=my-agents/ --output=.claude/agents --format=claude
 
 # Verbose output
-genagents -spec=plugins/spec/agents -targets="..." -verbose
+genagents --spec-dir=specs/ --targets="..." --verbose
 ```
 
 ## Examples
