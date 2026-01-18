@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/agent-result.schema.json",
+  "title": "Agent Validation Result",
+  "description": "JSON schema for individual agent validation output in a multi-agent team workflow",
+  "type": "object",
+  "required": ["agent_id", "step_id", "checks", "status", "executed_at"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference for validation"
+    },
+    "agent_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The agent identifier (e.g., 'pm', 'qa', 'documentation')"
+    },
+    "step_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "The workflow step identifier (e.g., 'pm-validation', 'qa-validation')"
+    },
+    "inputs": {
+      "type": "object",
+      "description": "Values received from upstream agents in the DAG workflow",
+      "additionalProperties": true
+    },
+    "outputs": {
+      "type": "object",
+      "description": "Values produced by this agent for downstream agents",
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "description": "Individual validation checks performed by this agent",
+      "items": {
+        "$ref": "#/$defs/check"
+      }
+    },
+    "status": {
+      "$ref": "#/$defs/status",
+      "description": "Overall status for this agent (computed from checks)"
+    },
+    "executed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the agent completed execution"
+    },
+    "agent_model": {
+      "type": "string",
+      "enum": ["haiku", "sonnet", "opus"],
+      "description": "The LLM model used by this agent"
+    },
+    "duration": {
+      "type": "string",
+      "description": "Execution duration (e.g., '1.5s', '2m30s')"
+    },
+    "error": {
+      "type": "string",
+      "description": "Error message if the agent failed to execute"
+    }
+  },
+  "$defs": {
+    "status": {
+      "type": "string",
+      "enum": ["GO", "WARN", "NO-GO", "SKIP"],
+      "description": "Validation status following NASA Go/No-Go terminology"
+    },
+    "check": {
+      "type": "object",
+      "required": ["id", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Check identifier (e.g., 'build', 'tests', 'version-recommendation')"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "detail": {
+          "type": "string",
+          "description": "Additional information about the check result"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Structured data about the check (e.g., test counts, coverage)",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}

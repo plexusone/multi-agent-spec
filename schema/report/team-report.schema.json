@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json",
+  "title": "Team Status Report",
+  "description": "JSON schema for aggregated multi-agent team validation report",
+  "type": "object",
+  "required": ["project", "version", "phase", "teams", "status", "generated_at"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference for validation"
+    },
+    "project": {
+      "type": "string",
+      "description": "Project identifier (e.g., 'github.com/org/repo')"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^v?\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.-]+)?(\\+[a-zA-Z0-9.-]+)?$",
+      "description": "Target release version (semantic versioning)"
+    },
+    "target": {
+      "type": "string",
+      "description": "Human-readable target description"
+    },
+    "phase": {
+      "type": "string",
+      "description": "Current workflow phase (e.g., 'PHASE 1: REVIEW')"
+    },
+    "teams": {
+      "type": "array",
+      "description": "Validation results from each agent/team",
+      "items": {
+        "$ref": "#/$defs/team"
+      }
+    },
+    "status": {
+      "$ref": "#/$defs/status",
+      "description": "Overall status (computed from all teams)"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the report was generated"
+    },
+    "generated_by": {
+      "type": "string",
+      "description": "Identifier of the coordinator that generated this report"
+    }
+  },
+  "$defs": {
+    "status": {
+      "type": "string",
+      "enum": ["GO", "WARN", "NO-GO", "SKIP"],
+      "description": "Validation status following NASA Go/No-Go terminology"
+    },
+    "team": {
+      "type": "object",
+      "required": ["id", "name", "checks", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Workflow step identifier (e.g., 'pm-validation')"
+        },
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Agent name (e.g., 'pm', 'qa')"
+        },
+        "agent_id": {
+          "type": "string",
+          "description": "Agent identifier matching team.json agents list"
+        },
+        "model": {
+          "type": "string",
+          "enum": ["haiku", "sonnet", "opus"],
+          "description": "LLM model used by this agent"
+        },
+        "checks": {
+          "type": "array",
+          "description": "Individual validation checks",
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        },
+        "status": {
+          "$ref": "#/$defs/status",
+          "description": "Overall status for this team (computed from checks)"
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "required": ["id", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Check identifier"
+        },
+        "status": {
+          "$ref": "#/$defs/status"
+        },
+        "detail": {
+          "type": "string",
+          "description": "Additional information about the check result"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Structured data about the check",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}
