@@ -140,23 +140,182 @@ Defines target platforms and configurations.
 
 ## Supported Platforms
 
-### P1 - Primary Targets
+### P1 - Primary Targets (CLI Assistants)
 
-| Platform | Description | Output Format |
-|----------|-------------|---------------|
-| `claude-code` | Claude Code CLI sub-agents | Markdown |
-| `kiro-cli` | Kiro CLI sub-agents | JSON |
-| `aws-agentcore` | AWS Bedrock AgentCore | CDK/Pulumi |
+| Platform | Description | Mode | Output Format |
+|----------|-------------|------|---------------|
+| `claude-code` | Claude Code CLI sub-agents | `single-process` | Markdown |
+| `gemini-cli` | Google Gemini CLI Assistant | `single-process` | Config |
+| `kiro-cli` | Kiro CLI sub-agents | `single-process` | JSON |
 
-### P2 - Secondary Targets
+### P2 - Agent Frameworks
 
-| Platform | Description | Output Format |
-|----------|-------------|---------------|
-| `aws-eks` | AWS Elastic Kubernetes Service | Helm |
-| `azure-aks` | Azure Kubernetes Service | Helm |
-| `gcp-gke` | Google Kubernetes Engine | Helm |
-| `kubernetes` | Generic Kubernetes | Helm |
-| `docker-compose` | Local Docker deployment | YAML |
+| Platform | Description | Mode | Output Format |
+|----------|-------------|------|---------------|
+| `adk-go` | Google Agent Development Kit (Go) | `distributed` | Go |
+| `crewai` | CrewAI multi-agent framework | `single-process` | Python |
+| `autogen` | Microsoft AutoGen framework | `single-process` | Python |
+| `aws-agentcore` | AWS Bedrock AgentCore | `serverless` | CDK/Pulumi |
+
+### P3 - Container Orchestration
+
+| Platform | Description | Mode | Output Format |
+|----------|-------------|------|---------------|
+| `kubernetes` | Generic Kubernetes | `distributed` | Helm |
+| `aws-eks` | AWS Elastic Kubernetes Service | `distributed` | Helm |
+| `azure-aks` | Azure Kubernetes Service | `distributed` | Helm |
+| `gcp-gke` | Google Kubernetes Engine | `distributed` | Helm |
+| `docker-compose` | Local Docker deployment | `multi-process` | YAML |
+
+## Deployment Modes
+
+Multi-agent-spec supports different deployment modes to match the runtime characteristics of each platform:
+
+| Mode | Description | Use Case |
+|------|-------------|----------|
+| `single-process` | All agents run in one process | CLI assistants (Claude Code, Gemini CLI) |
+| `multi-process` | Agents run as separate local processes | Local development with isolation |
+| `distributed` | Agents run on separate servers/containers | Production microservices (K8s, ADK) |
+| `serverless` | Agents run as serverless functions | AWS Lambda, Cloud Functions |
+
+### Mode Selection by Platform
+
+| Platform | Recommended Mode | Runtime Config |
+|----------|------------------|----------------|
+| `claude-code` | `single-process` | Not needed |
+| `gemini-cli` | `single-process` | Not needed |
+| `kiro-cli` | `single-process` | Not needed |
+| `crewai` | `single-process` | Optional (memory, iterations) |
+| `autogen` | `single-process` | Optional (human input mode) |
+| `adk-go` | `distributed` | Recommended (retry, timeout, observability) |
+| `aws-agentcore` | `serverless` | Recommended (timeout, resources) |
+| `kubernetes` | `distributed` | Required (resources, retry, observability) |
+
+## Runtime Configuration
+
+Runtime configuration is specified in the **deployment schema**, not the team schema. This separation allows the same team definition to work across different platforms with platform-appropriate runtime settings.
+
+### Schema Separation
+
+```
+team.schema.json (Logical)          deployment.schema.json (Runtime)
+├── agents                          ├── platform
+├── workflow                        ├── mode
+│   ├── steps                       └── runtime
+│   │   ├── depends_on (DAG)            ├── defaults
+│   │   ├── inputs (data flow)          │   ├── timeout
+│   │   └── outputs (data flow)         │   ├── retry
+└── context                             │   └── resources
+                                        ├── steps (per-step overrides)
+                                        └── observability
+```
+
+### Runtime Settings
+
+| Setting | Description | Example |
+|---------|-------------|---------|
+| `timeout` | Step execution limit | `"5m"`, `"1h"` |
+| `retry.max_attempts` | Max retry attempts | `3` |
+| `retry.backoff` | Backoff strategy | `"exponential"` |
+| `condition` | Conditional execution | `"inputs.ready == true"` |
+| `concurrency` | Max parallel executions | `2` |
+| `resources.cpu` | CPU limit | `"500m"`, `"2"` |
+| `resources.memory` | Memory limit | `"512Mi"`, `"2Gi"` |
+
+### Example: Single-Process Deployment (No Runtime Config)
+
+```json
+{
+  "name": "local-claude",
+  "platform": "claude-code",
+  "mode": "single-process",
+  "output": ".claude/agents"
+}
+```
+
+### Example: Distributed Deployment (Full Runtime Config)
+
+```json
+{
+  "name": "k8s-production",
+  "platform": "kubernetes",
+  "mode": "distributed",
+  "runtime": {
+    "defaults": {
+      "timeout": "5m",
+      "retry": {
+        "max_attempts": 3,
+        "backoff": "exponential"
+      }
+    },
+    "steps": {
+      "qa-validation": {
+        "timeout": "15m",
+        "resources": { "cpu": "2", "memory": "2Gi" }
+      }
+    },
+    "observability": {
+      "tracing": { "enabled": true, "exporter": "otlp" },
+      "metrics": { "enabled": true, "exporter": "prometheus" }
+    }
+  }
+}
+```
+
+## JSON Schema Guidelines for Go Compatibility
+
+The multi-agent-spec schemas are designed to be compatible with Go code generation. When modifying or extending the schemas, follow these guidelines:
+
+### Avoid Problematic Patterns
+
+| Pattern | Problem | Alternative |
+|---------|---------|-------------|
+| `anyOf` without discriminator | Generates `interface{}` | Add `const` discriminator field |
+| `oneOf` without discriminator | Generates `interface{}` | Add `const` discriminator field |
+| Nested unions >2 levels | Complex unmarshaling | Flatten hierarchy |
+| Large unions (>10 variants) | Unwieldy switch statements | Split into smaller unions |
+
+### Union Types with Discriminators
+
+If using `anyOf` or `oneOf`, add a discriminator field with unique `const` values:
+
+```json
+{
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "platform": { "const": "claude-code" },
+        "agentDir": { "type": "string" }
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "platform": { "const": "kubernetes" },
+        "namespace": { "type": "string" }
+      }
+    }
+  ]
+}
+```
+
+### Validating Schemas
+
+Use [`schemago`](https://github.com/grokify/schemago) to check schemas for Go compatibility:
+
+```bash
+schemago lint schema/agent/agent.schema.json
+schemago lint schema/orchestration/team.schema.json
+schemago lint schema/deployment/deployment.schema.json
+```
+
+### Preferred Patterns
+
+- Use `$ref` to reference definitions (schemago handles these correctly)
+- Keep union variants to `$ref` references when possible
+- Use nullable pattern `anyOf [T, null]` for optional types
+- Prefer simple string enums over complex union types
 
 ## Model Mappings
 
