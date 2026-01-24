@@ -23,14 +23,16 @@
     "agents": {
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*(/[a-z][a-z0-9-]*)?$"
       },
       "minItems": 1,
-      "description": "List of agent names in the team (references agent definitions)"
+      "description": "List of agent names (e.g., 'agent-name' or 'namespace/agent-name')"
     },
     "orchestrator": {
       "type": "string",
-      "description": "Name of the orchestrator agent (must be in agents list)"
+      "pattern": "^[a-z][a-z0-9-]*(/[a-z][a-z0-9-]*)?$",
+      "description": "Name of the orchestrator agent (e.g., 'orchestrator' or 'prd/lead')"
     },
     "workflow": {
       "$ref": "#/$defs/workflow",
@@ -71,7 +73,8 @@
         },
         "agent": {
           "type": "string",
-          "description": "Agent to execute this step (references agent definition)"
+          "pattern": "^[a-z][a-z0-9-]*(/[a-z][a-z0-9-]*)?$",
+          "description": "Agent to execute this step (e.g., 'agent-name' or 'namespace/agent-name')"
         },
         "depends_on": {
           "type": "array",
