@@ -1,8 +1,18 @@
 .DS_Store
 .env
-_*
 *.tar
 coverage.txt
 debug.test
 main
 main.zip
+
+# Node.js
+node_modules/
+sdk/typescript/dist/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
