@@ -20,6 +20,10 @@
       "type": "string",
       "description": "Brief description of the agent's purpose and capabilities"
     },
+    "icon": {
+      "type": "string",
+      "description": "Icon identifier for visual representation. Formats: 'brandkit:name' (from brandkit repo), 'lucide:name' (Lucide icon), or plain name for inference"
+    },
     "model": {
       "type": "string",
       "enum": ["haiku", "sonnet", "opus"],

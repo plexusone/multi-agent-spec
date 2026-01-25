@@ -93,6 +93,11 @@ type Agent struct {
 	// Description is a brief summary of what the agent does.
 	Description string `json:"description,omitempty" yaml:"description,omitempty"`
 
+	// Icon is the icon identifier for visual representation.
+	// Formats: 'brandkit:name' (from brandkit repo), 'lucide:name' (Lucide icon),
+	// or plain name for inference.
+	Icon string `json:"icon,omitempty" yaml:"icon,omitempty"`
+
 	// Model is the capability tier (haiku, sonnet, opus).
 	Model Model `json:"model,omitempty" yaml:"model,omitempty"`
 
