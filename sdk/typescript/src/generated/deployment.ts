@@ -1,0 +1,80 @@
+/**
+ * Auto-generated Zod schemas from JSON Schema.
+ * DO NOT EDIT - regenerate with: npm run generate
+ * Source: deployment/deployment.schema.json
+ */
+
+import { z } from 'zod';
+
+export const ADKGoConfigSchema = z.object({ "model": z.string().optional(), "serverPort": z.number().int().optional(), "sessionStore": z.string().optional(), "toolRegistry": z.string().optional() }).strict();
+export type ADKGoConfig = z.infer<typeof ADKGoConfigSchema>;
+
+export const AWSAgentCoreConfigSchema = z.object({ "region": z.string(), "foundationModel": z.string(), "iac": z.string(), "lambdaRuntime": z.string() }).strict();
+export type AWSAgentCoreConfig = z.infer<typeof AWSAgentCoreConfigSchema>;
+
+export const AgentKitLocalConfigSchema = z.object({ "transport": z.string(), "port": z.number().int().optional() }).strict();
+export type AgentKitLocalConfig = z.infer<typeof AgentKitLocalConfigSchema>;
+
+export const CodeExecutionConfigSchema = z.object({ "workDir": z.string().optional(), "useDocker": z.boolean().optional() }).strict();
+export type CodeExecutionConfig = z.infer<typeof CodeExecutionConfigSchema>;
+
+export const AutoGenConfigSchema = z.object({ "model": z.string().optional(), "humanInputMode": z.string().optional(), "maxConsecutiveAutoReply": z.number().int().optional(), "codeExecutionConfig": z.object({ "workDir": z.string().optional(), "useDocker": z.boolean().optional() }).strict().optional() }).strict();
+export type AutoGenConfig = z.infer<typeof AutoGenConfigSchema>;
+
+export const ClaudeCodeConfigSchema = z.object({ "agentDir": z.string(), "format": z.string() }).strict();
+export type ClaudeCodeConfig = z.infer<typeof ClaudeCodeConfigSchema>;
+
+export const CrewAIConfigSchema = z.object({ "model": z.string().optional(), "verbose": z.boolean().optional(), "memory": z.boolean().optional(), "processType": z.string().optional(), "maxIterations": z.number().int().optional() }).strict();
+export type CrewAIConfig = z.infer<typeof CrewAIConfigSchema>;
+
+export const PlatformSchema = z.enum(["claude-code","gemini-cli","kiro-cli","adk-go","crewai","autogen","aws-agentcore","aws-eks","azure-aks","gcp-gke","kubernetes","docker-compose","agentkit-local"]).describe("Supported deployment platform");
+export type Platform = z.infer<typeof PlatformSchema>;
+
+export const DeploymentModeSchema = z.enum(["single-process","multi-process","distributed","serverless"]).describe("Deployment execution mode");
+export type DeploymentMode = z.infer<typeof DeploymentModeSchema>;
+
+export const PrioritySchema = z.enum(["p1","p2","p3"]).describe("Deployment priority level").default("p2");
+export type Priority = z.infer<typeof PrioritySchema>;
+
+export const RetryPolicySchema = z.object({ "max_attempts": z.number().int().optional(), "backoff": z.string().optional(), "initial_delay": z.string().optional(), "max_delay": z.string().optional(), "retryable_errors": z.array(z.string()).optional() }).strict();
+export type RetryPolicy = z.infer<typeof RetryPolicySchema>;
+
+export const ResourceLimitsSchema = z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict();
+export type ResourceLimits = z.infer<typeof ResourceLimitsSchema>;
+
+export const StepRuntimeSchema = z.object({ "timeout": z.string().optional(), "retry": z.object({ "max_attempts": z.number().int().optional(), "backoff": z.string().optional(), "initial_delay": z.string().optional(), "max_delay": z.string().optional(), "retryable_errors": z.array(z.string()).optional() }).strict().optional(), "condition": z.string().optional(), "concurrency": z.number().int().optional(), "resources": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict();
+export type StepRuntime = z.infer<typeof StepRuntimeSchema>;
+
+export const TracingConfigSchema = z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional(), "sample_rate": z.number().optional() }).strict();
+export type TracingConfig = z.infer<typeof TracingConfigSchema>;
+
+export const MetricsConfigSchema = z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional() }).strict();
+export type MetricsConfig = z.infer<typeof MetricsConfigSchema>;
+
+export const LoggingConfigSchema = z.object({ "level": z.string().optional(), "format": z.string().optional() }).strict();
+export type LoggingConfig = z.infer<typeof LoggingConfigSchema>;
+
+export const ObservabilityConfigSchema = z.object({ "tracing": z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional(), "sample_rate": z.number().optional() }).strict().optional(), "metrics": z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional() }).strict().optional(), "logging": z.object({ "level": z.string().optional(), "format": z.string().optional() }).strict().optional() }).strict();
+export type ObservabilityConfig = z.infer<typeof ObservabilityConfigSchema>;
+
+export const RuntimeConfigSchema = z.object({ "defaults": z.object({ "timeout": z.string().optional(), "retry": z.object({ "max_attempts": z.number().int().optional(), "backoff": z.string().optional(), "initial_delay": z.string().optional(), "max_delay": z.string().optional(), "retryable_errors": z.array(z.string()).optional() }).strict().optional(), "condition": z.string().optional(), "concurrency": z.number().int().optional(), "resources": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict().optional(), "steps": z.record(z.object({ "timeout": z.string().optional(), "retry": z.object({ "max_attempts": z.number().int().optional(), "backoff": z.string().optional(), "initial_delay": z.string().optional(), "max_delay": z.string().optional(), "retryable_errors": z.array(z.string()).optional() }).strict().optional(), "condition": z.string().optional(), "concurrency": z.number().int().optional(), "resources": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict()).optional(), "observability": z.object({ "tracing": z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional(), "sample_rate": z.number().optional() }).strict().optional(), "metrics": z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional() }).strict().optional(), "logging": z.object({ "level": z.string().optional(), "format": z.string().optional() }).strict().optional() }).strict().optional() }).strict();
+export type RuntimeConfig = z.infer<typeof RuntimeConfigSchema>;
+
+export const GeminiCLIConfigSchema = z.object({ "model": z.string().optional(), "configDir": z.string().optional() }).strict();
+export type GeminiCLIConfig = z.infer<typeof GeminiCLIConfigSchema>;
+
+export const KiroCLIConfigSchema = z.object({ "pluginDir": z.string(), "format": z.string() }).strict();
+export type KiroCLIConfig = z.infer<typeof KiroCLIConfigSchema>;
+
+export const KubernetesConfigSchema = z.object({ "namespace": z.string(), "helmChart": z.boolean(), "imageRegistry": z.string().optional(), "resourceLimits": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict();
+export type KubernetesConfig = z.infer<typeof KubernetesConfigSchema>;
+
+export const DockerComposeConfigSchema = z.object({ "networkMode": z.string().optional() }).strict();
+export type DockerComposeConfig = z.infer<typeof DockerComposeConfigSchema>;
+
+export const TargetSchema = z.object({ "name": z.string(), "platform": z.enum(["claude-code","gemini-cli","kiro-cli","adk-go","crewai","autogen","aws-agentcore","aws-eks","azure-aks","gcp-gke","kubernetes","docker-compose","agentkit-local"]).describe("Supported deployment platform"), "mode": z.enum(["single-process","multi-process","distributed","serverless"]).describe("Deployment execution mode").optional(), "priority": z.enum(["p1","p2","p3"]).describe("Deployment priority level").default("p2"), "output": z.string().optional(), "runtime": z.object({ "defaults": z.object({ "timeout": z.string().optional(), "retry": z.object({ "max_attempts": z.number().int().optional(), "backoff": z.string().optional(), "initial_delay": z.string().optional(), "max_delay": z.string().optional(), "retryable_errors": z.array(z.string()).optional() }).strict().optional(), "condition": z.string().optional(), "concurrency": z.number().int().optional(), "resources": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict().optional(), "steps": z.record(z.object({ "timeout": z.string().optional(), "retry": z.object({ "max_attempts": z.number().int().optional(), "backoff": z.string().optional(), "initial_delay": z.string().optional(), "max_delay": z.string().optional(), "retryable_errors": z.array(z.string()).optional() }).strict().optional(), "condition": z.string().optional(), "concurrency": z.number().int().optional(), "resources": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict()).optional(), "observability": z.object({ "tracing": z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional(), "sample_rate": z.number().optional() }).strict().optional(), "metrics": z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional() }).strict().optional(), "logging": z.object({ "level": z.string().optional(), "format": z.string().optional() }).strict().optional() }).strict().optional() }).strict().optional(), "claudeCode": z.object({ "agentDir": z.string(), "format": z.string() }).strict().optional(), "geminiCli": z.object({ "model": z.string().optional(), "configDir": z.string().optional() }).strict().optional(), "kiroCli": z.object({ "pluginDir": z.string(), "format": z.string() }).strict().optional(), "adkGo": z.object({ "model": z.string().optional(), "serverPort": z.number().int().optional(), "sessionStore": z.string().optional(), "toolRegistry": z.string().optional() }).strict().optional(), "crewai": z.object({ "model": z.string().optional(), "verbose": z.boolean().optional(), "memory": z.boolean().optional(), "processType": z.string().optional(), "maxIterations": z.number().int().optional() }).strict().optional(), "autogen": z.object({ "model": z.string().optional(), "humanInputMode": z.string().optional(), "maxConsecutiveAutoReply": z.number().int().optional(), "codeExecutionConfig": z.object({ "workDir": z.string().optional(), "useDocker": z.boolean().optional() }).strict().optional() }).strict().optional(), "awsAgentCore": z.object({ "region": z.string(), "foundationModel": z.string(), "iac": z.string(), "lambdaRuntime": z.string() }).strict().optional(), "kubernetes": z.object({ "namespace": z.string(), "helmChart": z.boolean(), "imageRegistry": z.string().optional(), "resourceLimits": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict().optional(), "dockerCompose": z.object({ "networkMode": z.string().optional() }).strict().optional(), "agentKitLocal": z.object({ "transport": z.string(), "port": z.number().int().optional() }).strict().optional() }).strict();
+export type Target = z.infer<typeof TargetSchema>;
+
+export const DeploymentSchema = z.object({ "$schema": z.string().optional(), "team": z.string(), "targets": z.array(z.object({ "name": z.string(), "platform": z.enum(["claude-code","gemini-cli","kiro-cli","adk-go","crewai","autogen","aws-agentcore","aws-eks","azure-aks","gcp-gke","kubernetes","docker-compose","agentkit-local"]).describe("Supported deployment platform"), "mode": z.enum(["single-process","multi-process","distributed","serverless"]).describe("Deployment execution mode").optional(), "priority": z.enum(["p1","p2","p3"]).describe("Deployment priority level").default("p2"), "output": z.string().optional(), "runtime": z.object({ "defaults": z.object({ "timeout": z.string().optional(), "retry": z.object({ "max_attempts": z.number().int().optional(), "backoff": z.string().optional(), "initial_delay": z.string().optional(), "max_delay": z.string().optional(), "retryable_errors": z.array(z.string()).optional() }).strict().optional(), "condition": z.string().optional(), "concurrency": z.number().int().optional(), "resources": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict().optional(), "steps": z.record(z.object({ "timeout": z.string().optional(), "retry": z.object({ "max_attempts": z.number().int().optional(), "backoff": z.string().optional(), "initial_delay": z.string().optional(), "max_delay": z.string().optional(), "retryable_errors": z.array(z.string()).optional() }).strict().optional(), "condition": z.string().optional(), "concurrency": z.number().int().optional(), "resources": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict()).optional(), "observability": z.object({ "tracing": z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional(), "sample_rate": z.number().optional() }).strict().optional(), "metrics": z.object({ "enabled": z.boolean().optional(), "exporter": z.string().optional(), "endpoint": z.string().optional() }).strict().optional(), "logging": z.object({ "level": z.string().optional(), "format": z.string().optional() }).strict().optional() }).strict().optional() }).strict().optional(), "claudeCode": z.object({ "agentDir": z.string(), "format": z.string() }).strict().optional(), "geminiCli": z.object({ "model": z.string().optional(), "configDir": z.string().optional() }).strict().optional(), "kiroCli": z.object({ "pluginDir": z.string(), "format": z.string() }).strict().optional(), "adkGo": z.object({ "model": z.string().optional(), "serverPort": z.number().int().optional(), "sessionStore": z.string().optional(), "toolRegistry": z.string().optional() }).strict().optional(), "crewai": z.object({ "model": z.string().optional(), "verbose": z.boolean().optional(), "memory": z.boolean().optional(), "processType": z.string().optional(), "maxIterations": z.number().int().optional() }).strict().optional(), "autogen": z.object({ "model": z.string().optional(), "humanInputMode": z.string().optional(), "maxConsecutiveAutoReply": z.number().int().optional(), "codeExecutionConfig": z.object({ "workDir": z.string().optional(), "useDocker": z.boolean().optional() }).strict().optional() }).strict().optional(), "awsAgentCore": z.object({ "region": z.string(), "foundationModel": z.string(), "iac": z.string(), "lambdaRuntime": z.string() }).strict().optional(), "kubernetes": z.object({ "namespace": z.string(), "helmChart": z.boolean(), "imageRegistry": z.string().optional(), "resourceLimits": z.object({ "cpu": z.string().optional(), "memory": z.string().optional(), "gpu": z.number().int().optional() }).strict().optional() }).strict().optional(), "dockerCompose": z.object({ "networkMode": z.string().optional() }).strict().optional(), "agentKitLocal": z.object({ "transport": z.string(), "port": z.number().int().optional() }).strict().optional() }).strict()) }).strict();
+export type Deployment = z.infer<typeof DeploymentSchema>;
+

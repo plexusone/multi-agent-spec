@@ -1,442 +1,449 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/deployment/deployment.schema.json",
-  "title": "Multi-Agent Spec - Deployment Definition",
-  "description": "Schema for defining deployment targets and runtime configurations for a multi-agent team",
-  "type": "object",
-  "required": ["team", "targets"],
-  "properties": {
-    "team": {
-      "type": "string",
-      "description": "Reference to the team definition (team name)"
-    },
-    "targets": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/target"
-      },
-      "minItems": 1,
-      "description": "List of deployment targets"
-    }
-  },
+  "$ref": "#/$defs/Deployment",
   "$defs": {
-    "target": {
-      "type": "object",
-      "required": ["name", "platform"],
+    "ADKGoConfig": {
       "properties": {
-        "name": {
-          "type": "string",
-          "description": "Unique name for this deployment target"
-        },
-        "platform": {
-          "type": "string",
-          "enum": [
-            "claude-code",
-            "gemini-cli",
-            "kiro-cli",
-            "adk-go",
-            "crewai",
-            "autogen",
-            "aws-agentcore",
-            "aws-eks",
-            "azure-aks",
-            "gcp-gke",
-            "kubernetes",
-            "docker-compose",
-            "agentkit-local"
-          ],
-          "description": "Target platform for deployment"
-        },
-        "mode": {
-          "type": "string",
-          "enum": ["single-process", "multi-process", "distributed", "serverless"],
-          "default": "single-process",
-          "description": "Deployment mode affecting runtime behavior"
-        },
-        "priority": {
-          "type": "string",
-          "enum": ["p1", "p2", "p3"],
-          "default": "p2",
-          "description": "Deployment priority (p1=primary, p2=secondary, p3=experimental)"
-        },
-        "output": {
-          "type": "string",
-          "description": "Output directory for generated deployment artifacts"
-        },
-        "runtime": {
-          "$ref": "#/$defs/runtimeConfig",
-          "description": "Runtime configuration for workflow execution"
-        },
-        "config": {
-          "oneOf": [
-            { "$ref": "#/$defs/claudeCodeConfig" },
-            { "$ref": "#/$defs/geminiCliConfig" },
-            { "$ref": "#/$defs/kiroCliConfig" },
-            { "$ref": "#/$defs/adkGoConfig" },
-            { "$ref": "#/$defs/crewaiConfig" },
-            { "$ref": "#/$defs/autogenConfig" },
-            { "$ref": "#/$defs/awsAgentCoreConfig" },
-            { "$ref": "#/$defs/kubernetesConfig" },
-            { "$ref": "#/$defs/dockerComposeConfig" }
-          ],
-          "description": "Platform-specific configuration"
-        }
-      }
-    },
-    "runtimeConfig": {
-      "type": "object",
-      "description": "Runtime configuration for workflow execution",
-      "properties": {
-        "defaults": {
-          "$ref": "#/$defs/stepRuntime",
-          "description": "Default runtime settings for all steps"
-        },
-        "steps": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/$defs/stepRuntime"
-          },
-          "description": "Per-step runtime overrides keyed by step name"
-        },
-        "observability": {
-          "$ref": "#/$defs/observabilityConfig",
-          "description": "Observability and monitoring settings"
-        }
-      }
-    },
-    "stepRuntime": {
-      "type": "object",
-      "description": "Runtime settings for a workflow step",
-      "properties": {
-        "timeout": {
-          "type": "string",
-          "pattern": "^\\d+[smh]$",
-          "description": "Step timeout (e.g., 30s, 5m, 1h)"
-        },
-        "retry": {
-          "$ref": "#/$defs/retryPolicy",
-          "description": "Retry policy for step failures"
-        },
-        "condition": {
-          "type": "string",
-          "description": "Condition expression for conditional execution"
-        },
-        "concurrency": {
-          "type": "integer",
-          "minimum": 1,
-          "default": 1,
-          "description": "Max concurrent executions of this step"
-        },
-        "resources": {
-          "$ref": "#/$defs/resourceLimits",
-          "description": "Resource limits for this step"
-        }
-      }
-    },
-    "retryPolicy": {
-      "type": "object",
-      "description": "Retry policy for handling step failures",
-      "properties": {
-        "max_attempts": {
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 10,
-          "default": 3,
-          "description": "Maximum number of retry attempts"
-        },
-        "backoff": {
-          "type": "string",
-          "enum": ["fixed", "exponential", "linear"],
-          "default": "exponential",
-          "description": "Backoff strategy between retries"
-        },
-        "initial_delay": {
-          "type": "string",
-          "pattern": "^\\d+[smh]$",
-          "default": "1s",
-          "description": "Initial delay before first retry"
-        },
-        "max_delay": {
-          "type": "string",
-          "pattern": "^\\d+[smh]$",
-          "default": "1m",
-          "description": "Maximum delay between retries"
-        },
-        "retryable_errors": {
-          "type": "array",
-          "items": { "type": "string" },
-          "description": "Error types that should trigger retry (empty = all errors)"
-        }
-      }
-    },
-    "resourceLimits": {
-      "type": "object",
-      "description": "Resource limits for step execution",
-      "properties": {
-        "cpu": {
-          "type": "string",
-          "description": "CPU limit (e.g., 500m, 2)"
-        },
-        "memory": {
-          "type": "string",
-          "description": "Memory limit (e.g., 512Mi, 2Gi)"
-        },
-        "gpu": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Number of GPUs required"
-        }
-      }
-    },
-    "observabilityConfig": {
-      "type": "object",
-      "description": "Observability and monitoring configuration",
-      "properties": {
-        "tracing": {
-          "type": "object",
-          "properties": {
-            "enabled": { "type": "boolean", "default": false },
-            "exporter": {
-              "type": "string",
-              "enum": ["otlp", "jaeger", "zipkin", "console"],
-              "default": "otlp"
-            },
-            "endpoint": { "type": "string" },
-            "sample_rate": { "type": "number", "minimum": 0, "maximum": 1, "default": 1.0 }
-          }
-        },
-        "metrics": {
-          "type": "object",
-          "properties": {
-            "enabled": { "type": "boolean", "default": false },
-            "exporter": {
-              "type": "string",
-              "enum": ["prometheus", "otlp", "statsd"],
-              "default": "prometheus"
-            },
-            "endpoint": { "type": "string" }
-          }
-        },
-        "logging": {
-          "type": "object",
-          "properties": {
-            "level": {
-              "type": "string",
-              "enum": ["debug", "info", "warn", "error"],
-              "default": "info"
-            },
-            "format": {
-              "type": "string",
-              "enum": ["json", "text"],
-              "default": "json"
-            }
-          }
-        }
-      }
-    },
-    "claudeCodeConfig": {
-      "type": "object",
-      "properties": {
-        "platform": { "const": "claude-code" },
-        "agentDir": {
-          "type": "string",
-          "default": ".claude/agents",
-          "description": "Directory for agent definitions"
-        },
-        "format": {
-          "type": "string",
-          "enum": ["markdown"],
-          "default": "markdown"
-        }
-      }
-    },
-    "kiroCliConfig": {
-      "type": "object",
-      "properties": {
-        "platform": { "const": "kiro-cli" },
-        "pluginDir": {
-          "type": "string",
-          "default": "plugins/kiro/agents",
-          "description": "Directory for Kiro agent plugins"
-        },
-        "format": {
-          "type": "string",
-          "enum": ["json"],
-          "default": "json"
-        }
-      }
-    },
-    "awsAgentCoreConfig": {
-      "type": "object",
-      "properties": {
-        "platform": { "const": "aws-agentcore" },
-        "region": {
-          "type": "string",
-          "default": "us-east-1",
-          "description": "AWS region for deployment"
-        },
-        "foundationModel": {
-          "type": "string",
-          "default": "anthropic.claude-3-sonnet-20240229-v1:0",
-          "description": "Bedrock foundation model ARN"
-        },
-        "iac": {
-          "type": "string",
-          "enum": ["cdk", "pulumi", "terraform"],
-          "default": "cdk",
-          "description": "Infrastructure as code tool"
-        },
-        "lambdaRuntime": {
-          "type": "string",
-          "default": "python3.11",
-          "description": "Runtime for Lambda tool implementations"
-        }
-      }
-    },
-    "kubernetesConfig": {
-      "type": "object",
-      "properties": {
-        "platform": { "const": "kubernetes" },
-        "namespace": {
-          "type": "string",
-          "default": "multi-agent",
-          "description": "Kubernetes namespace"
-        },
-        "helmChart": {
-          "type": "boolean",
-          "default": true,
-          "description": "Generate Helm chart"
-        },
-        "imageRegistry": {
-          "type": "string",
-          "description": "Container image registry"
-        },
-        "resourceLimits": {
-          "type": "object",
-          "properties": {
-            "cpu": { "type": "string", "default": "500m" },
-            "memory": { "type": "string", "default": "512Mi" }
-          }
-        }
-      }
-    },
-    "dockerComposeConfig": {
-      "type": "object",
-      "properties": {
-        "platform": { "const": "docker-compose" },
-        "networkMode": {
-          "type": "string",
-          "enum": ["bridge", "host"],
-          "default": "bridge"
-        }
-      }
-    },
-    "geminiCliConfig": {
-      "type": "object",
-      "description": "Configuration for Google Gemini CLI Assistant deployment",
-      "properties": {
-        "platform": { "const": "gemini-cli" },
         "model": {
-          "type": "string",
-          "default": "gemini-2.0-flash",
-          "description": "Gemini model to use"
-        },
-        "configDir": {
-          "type": "string",
-          "default": ".gemini",
-          "description": "Directory for Gemini configuration"
-        }
-      }
-    },
-    "adkGoConfig": {
-      "type": "object",
-      "description": "Configuration for Google Agent Development Kit (Go) deployment",
-      "properties": {
-        "platform": { "const": "adk-go" },
-        "model": {
-          "type": "string",
-          "default": "gemini-2.0-flash",
-          "description": "Foundation model for agents"
+          "type": "string"
         },
         "serverPort": {
-          "type": "integer",
-          "default": 8080,
-          "description": "Port for ADK server"
+          "type": "integer"
         },
         "sessionStore": {
-          "type": "string",
-          "enum": ["memory", "redis", "firestore"],
-          "default": "memory",
-          "description": "Session storage backend"
+          "type": "string"
         },
         "toolRegistry": {
-          "type": "string",
-          "description": "Path to tool registry configuration"
+          "type": "string"
         }
-      }
+      },
+      "additionalProperties": false,
+      "type": "object"
     },
-    "crewaiConfig": {
-      "type": "object",
-      "description": "Configuration for CrewAI deployment",
+    "AWSAgentCoreConfig": {
       "properties": {
-        "platform": { "const": "crewai" },
-        "model": {
-          "type": "string",
-          "default": "gpt-4",
-          "description": "LLM model for agents"
+        "region": {
+          "type": "string"
         },
-        "verbose": {
-          "type": "boolean",
-          "default": false,
-          "description": "Enable verbose output"
+        "foundationModel": {
+          "type": "string"
         },
-        "memory": {
-          "type": "boolean",
-          "default": true,
-          "description": "Enable agent memory"
+        "iac": {
+          "type": "string"
         },
-        "processType": {
-          "type": "string",
-          "enum": ["sequential", "hierarchical"],
-          "default": "sequential",
-          "description": "Crew process type"
-        },
-        "maxIterations": {
-          "type": "integer",
-          "default": 10,
-          "description": "Maximum task iterations"
+        "lambdaRuntime": {
+          "type": "string"
         }
-      }
-    },
-    "autogenConfig": {
+      },
+      "additionalProperties": false,
       "type": "object",
-      "description": "Configuration for Microsoft AutoGen deployment",
+      "required": [
+        "region",
+        "foundationModel",
+        "iac",
+        "lambdaRuntime"
+      ]
+    },
+    "AgentKitLocalConfig": {
       "properties": {
-        "platform": { "const": "autogen" },
+        "transport": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "transport"
+      ]
+    },
+    "AutoGenConfig": {
+      "properties": {
         "model": {
-          "type": "string",
-          "default": "gpt-4",
-          "description": "LLM model for agents"
+          "type": "string"
         },
         "humanInputMode": {
-          "type": "string",
-          "enum": ["NEVER", "TERMINATE", "ALWAYS"],
-          "default": "NEVER",
-          "description": "When to request human input"
+          "type": "string"
         },
         "maxConsecutiveAutoReply": {
-          "type": "integer",
-          "default": 10,
-          "description": "Max consecutive auto-replies"
+          "type": "integer"
         },
         "codeExecutionConfig": {
-          "type": "object",
-          "properties": {
-            "workDir": { "type": "string", "default": "workspace" },
-            "useDocker": { "type": "boolean", "default": false }
-          }
+          "$ref": "#/$defs/CodeExecutionConfig"
         }
-      }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ClaudeCodeConfig": {
+      "properties": {
+        "agentDir": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "agentDir",
+        "format"
+      ]
+    },
+    "CodeExecutionConfig": {
+      "properties": {
+        "workDir": {
+          "type": "string"
+        },
+        "useDocker": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "CrewAIConfig": {
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "verbose": {
+          "type": "boolean"
+        },
+        "memory": {
+          "type": "boolean"
+        },
+        "processType": {
+          "type": "string"
+        },
+        "maxIterations": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Deployment": {
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "team": {
+          "type": "string"
+        },
+        "targets": {
+          "items": {
+            "$ref": "#/$defs/Target"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "team",
+        "targets"
+      ]
+    },
+    "DeploymentMode": {
+      "type": "string",
+      "enum": [
+        "single-process",
+        "multi-process",
+        "distributed",
+        "serverless"
+      ],
+      "description": "Deployment execution mode"
+    },
+    "DockerComposeConfig": {
+      "properties": {
+        "networkMode": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "GeminiCLIConfig": {
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "configDir": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "KiroCLIConfig": {
+      "properties": {
+        "pluginDir": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "pluginDir",
+        "format"
+      ]
+    },
+    "KubernetesConfig": {
+      "properties": {
+        "namespace": {
+          "type": "string"
+        },
+        "helmChart": {
+          "type": "boolean"
+        },
+        "imageRegistry": {
+          "type": "string"
+        },
+        "resourceLimits": {
+          "$ref": "#/$defs/ResourceLimits"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "namespace",
+        "helmChart"
+      ]
+    },
+    "LoggingConfig": {
+      "properties": {
+        "level": {
+          "type": "string"
+        },
+        "format": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "MetricsConfig": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "exporter": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "ObservabilityConfig": {
+      "properties": {
+        "tracing": {
+          "$ref": "#/$defs/TracingConfig"
+        },
+        "metrics": {
+          "$ref": "#/$defs/MetricsConfig"
+        },
+        "logging": {
+          "$ref": "#/$defs/LoggingConfig"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Platform": {
+      "type": "string",
+      "enum": [
+        "claude-code",
+        "gemini-cli",
+        "kiro-cli",
+        "adk-go",
+        "crewai",
+        "autogen",
+        "aws-agentcore",
+        "aws-eks",
+        "azure-aks",
+        "gcp-gke",
+        "kubernetes",
+        "docker-compose",
+        "agentkit-local"
+      ],
+      "description": "Supported deployment platform"
+    },
+    "Priority": {
+      "type": "string",
+      "enum": [
+        "p1",
+        "p2",
+        "p3"
+      ],
+      "description": "Deployment priority level",
+      "default": "p2"
+    },
+    "ResourceLimits": {
+      "properties": {
+        "cpu": {
+          "type": "string"
+        },
+        "memory": {
+          "type": "string"
+        },
+        "gpu": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "RetryPolicy": {
+      "properties": {
+        "max_attempts": {
+          "type": "integer"
+        },
+        "backoff": {
+          "type": "string"
+        },
+        "initial_delay": {
+          "type": "string"
+        },
+        "max_delay": {
+          "type": "string"
+        },
+        "retryable_errors": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "RuntimeConfig": {
+      "properties": {
+        "defaults": {
+          "$ref": "#/$defs/StepRuntime"
+        },
+        "steps": {
+          "additionalProperties": {
+            "$ref": "#/$defs/StepRuntime"
+          },
+          "type": "object"
+        },
+        "observability": {
+          "$ref": "#/$defs/ObservabilityConfig"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "StepRuntime": {
+      "properties": {
+        "timeout": {
+          "type": "string"
+        },
+        "retry": {
+          "$ref": "#/$defs/RetryPolicy"
+        },
+        "condition": {
+          "type": "string"
+        },
+        "concurrency": {
+          "type": "integer"
+        },
+        "resources": {
+          "$ref": "#/$defs/ResourceLimits"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "Target": {
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "platform": {
+          "$ref": "#/$defs/Platform"
+        },
+        "mode": {
+          "$ref": "#/$defs/DeploymentMode"
+        },
+        "priority": {
+          "$ref": "#/$defs/Priority"
+        },
+        "output": {
+          "type": "string"
+        },
+        "runtime": {
+          "$ref": "#/$defs/RuntimeConfig"
+        },
+        "claudeCode": {
+          "$ref": "#/$defs/ClaudeCodeConfig"
+        },
+        "geminiCli": {
+          "$ref": "#/$defs/GeminiCLIConfig"
+        },
+        "kiroCli": {
+          "$ref": "#/$defs/KiroCLIConfig"
+        },
+        "adkGo": {
+          "$ref": "#/$defs/ADKGoConfig"
+        },
+        "crewai": {
+          "$ref": "#/$defs/CrewAIConfig"
+        },
+        "autogen": {
+          "$ref": "#/$defs/AutoGenConfig"
+        },
+        "awsAgentCore": {
+          "$ref": "#/$defs/AWSAgentCoreConfig"
+        },
+        "kubernetes": {
+          "$ref": "#/$defs/KubernetesConfig"
+        },
+        "dockerCompose": {
+          "$ref": "#/$defs/DockerComposeConfig"
+        },
+        "agentKitLocal": {
+          "$ref": "#/$defs/AgentKitLocalConfig"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "platform"
+      ]
+    },
+    "TracingConfig": {
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "exporter": {
+          "type": "string"
+        },
+        "endpoint": {
+          "type": "string"
+        },
+        "sample_rate": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
     }
-  }
+  },
+  "title": "Multi-Agent Spec - Deployment Definition",
+  "description": "Schema for defining deployment targets for multi-agent systems"
 }

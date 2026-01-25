@@ -1,128 +1,128 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json",
-  "title": "Team Status Report",
-  "description": "JSON schema for aggregated multi-agent team validation report",
-  "type": "object",
-  "required": ["project", "version", "phase", "teams", "status", "generated_at"],
-  "properties": {
-    "$schema": {
-      "type": "string",
-      "description": "JSON Schema reference for validation"
-    },
-    "project": {
-      "type": "string",
-      "description": "Project identifier (e.g., 'github.com/org/repo')"
-    },
-    "version": {
-      "type": "string",
-      "pattern": "^v?\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9.-]+)?(\\+[a-zA-Z0-9.-]+)?$",
-      "description": "Target release version (semantic versioning)"
-    },
-    "target": {
-      "type": "string",
-      "description": "Human-readable target description"
-    },
-    "phase": {
-      "type": "string",
-      "description": "Current workflow phase (e.g., 'PHASE 1: REVIEW')"
-    },
-    "teams": {
-      "type": "array",
-      "description": "Validation results from each agent/team",
-      "items": {
-        "$ref": "#/$defs/team"
-      }
-    },
-    "status": {
-      "$ref": "#/$defs/status",
-      "description": "Overall status (computed from all teams)"
-    },
-    "generated_at": {
-      "type": "string",
-      "format": "date-time",
-      "description": "ISO 8601 timestamp when the report was generated"
-    },
-    "generated_by": {
-      "type": "string",
-      "description": "Identifier of the coordinator that generated this report"
-    }
-  },
+  "$ref": "#/$defs/TeamReport",
   "$defs": {
-    "status": {
+    "Status": {
       "type": "string",
-      "enum": ["GO", "WARN", "NO-GO", "SKIP"],
-      "description": "Validation status following NASA Go/No-Go terminology"
+      "enum": [
+        "GO",
+        "NO-GO",
+        "WARN",
+        "SKIP"
+      ],
+      "description": "Validation status"
     },
-    "team": {
-      "type": "object",
-      "required": ["id", "name", "tasks", "status"],
+    "TaskResult": {
       "properties": {
         "id": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/Status"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "duration_ms": {
+          "type": "integer"
+        },
+        "metadata": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id",
+        "status"
+      ]
+    },
+    "TeamReport": {
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "phase": {
+          "type": "string"
+        },
+        "teams": {
+          "items": {
+            "$ref": "#/$defs/TeamSection"
+          },
+          "type": "array"
+        },
+        "status": {
+          "$ref": "#/$defs/Status"
+        },
+        "generated_at": {
           "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "description": "Workflow step identifier (e.g., 'pm-validation')"
+          "format": "date-time"
+        },
+        "generated_by": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "project",
+        "version",
+        "phase",
+        "teams",
+        "status",
+        "generated_at"
+      ]
+    },
+    "TeamSection": {
+      "properties": {
+        "id": {
+          "type": "string"
         },
         "name": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "description": "Agent name (e.g., 'pm', 'qa')"
+          "type": "string"
         },
         "agent_id": {
-          "type": "string",
-          "description": "Agent identifier matching team.json agents list"
+          "type": "string"
         },
         "model": {
-          "type": "string",
-          "enum": ["haiku", "sonnet", "opus"],
-          "description": "LLM model used by this agent"
+          "type": "string"
         },
         "depends_on": {
-          "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "IDs of upstream teams this team depends on (for DAG sorting)"
+          "type": "array"
         },
         "tasks": {
-          "type": "array",
-          "description": "Individual task results (one per line in reports)",
           "items": {
-            "$ref": "#/$defs/task_result"
-          }
+            "$ref": "#/$defs/TaskResult"
+          },
+          "type": "array"
         },
         "status": {
-          "$ref": "#/$defs/status",
-          "description": "Overall status for this team (computed from tasks)"
+          "$ref": "#/$defs/Status"
         }
-      }
-    },
-    "task_result": {
+      },
+      "additionalProperties": false,
       "type": "object",
-      "required": ["id", "status"],
-      "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "description": "Task identifier (matches task id in agent definition)"
-        },
-        "status": {
-          "$ref": "#/$defs/status"
-        },
-        "detail": {
-          "type": "string",
-          "description": "Additional information about the task result"
-        },
-        "duration_ms": {
-          "type": "integer",
-          "description": "Task execution time in milliseconds"
-        },
-        "metadata": {
-          "type": "object",
-          "description": "Structured data about the task execution",
-          "additionalProperties": true
-        }
-      }
+      "required": [
+        "id",
+        "name",
+        "tasks",
+        "status"
+      ]
     }
-  }
+  },
+  "title": "Multi-Agent Spec - Team Report",
+  "description": "Schema for team validation reports"
 }

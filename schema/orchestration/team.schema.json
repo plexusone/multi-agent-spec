@@ -1,141 +1,142 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/orchestration/team.schema.json",
-  "title": "Multi-Agent Spec - Team Definition",
-  "description": "Schema for defining a team of agents with orchestration patterns",
-  "type": "object",
-  "required": ["name", "version", "agents"],
-  "properties": {
-    "name": {
-      "type": "string",
-      "pattern": "^[a-z][a-z0-9-]*$",
-      "description": "Team identifier (e.g., stats-agent-team)"
-    },
-    "version": {
-      "type": "string",
-      "pattern": "^\\d+\\.\\d+\\.\\d+$",
-      "description": "Semantic version of the team definition"
-    },
-    "description": {
-      "type": "string",
-      "description": "Brief description of the team's purpose"
-    },
-    "agents": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "pattern": "^[a-z][a-z0-9-]*(/[a-z][a-z0-9-]*)?$"
-      },
-      "minItems": 1,
-      "description": "List of agent names (e.g., 'agent-name' or 'namespace/agent-name')"
-    },
-    "orchestrator": {
-      "type": "string",
-      "pattern": "^[a-z][a-z0-9-]*(/[a-z][a-z0-9-]*)?$",
-      "description": "Name of the orchestrator agent (e.g., 'orchestrator' or 'prd/lead')"
-    },
-    "workflow": {
-      "$ref": "#/$defs/workflow",
-      "description": "Workflow definition for agent coordination"
-    },
-    "context": {
-      "type": "string",
-      "description": "Shared context or background information for all agents"
-    }
-  },
+  "$ref": "#/$defs/Team",
   "$defs": {
-    "workflow": {
-      "type": "object",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": ["sequential", "parallel", "dag", "orchestrated"],
-          "default": "orchestrated",
-          "description": "Workflow execution pattern"
-        },
-        "steps": {
-          "type": "array",
-          "items": {
-            "$ref": "#/$defs/step"
-          },
-          "description": "Ordered steps in the workflow (for sequential/dag types)"
-        }
-      }
-    },
-    "step": {
-      "type": "object",
-      "required": ["name", "agent"],
+    "Port": {
       "properties": {
         "name": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "description": "Step identifier (e.g., pm-validation)"
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/PortType"
+        },
+        "description": {
+          "type": "string"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "from": {
+          "type": "string"
+        },
+        "schema": true,
+        "default": true
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    },
+    "PortType": {
+      "type": "string",
+      "enum": [
+        "string",
+        "number",
+        "boolean",
+        "object",
+        "array",
+        "file"
+      ],
+      "description": "Data type of a port"
+    },
+    "Step": {
+      "properties": {
+        "name": {
+          "type": "string"
         },
         "agent": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*(/[a-z][a-z0-9-]*)?$",
-          "description": "Agent to execute this step (e.g., 'agent-name' or 'namespace/agent-name')"
+          "type": "string"
         },
         "depends_on": {
-          "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Steps that must complete before this step (DAG edges)"
+          "type": "array"
         },
         "inputs": {
-          "type": "array",
           "items": {
-            "$ref": "#/$defs/port"
+            "$ref": "#/$defs/Port"
           },
-          "description": "Data inputs consumed by this step (from upstream outputs)"
+          "type": "array"
         },
         "outputs": {
-          "type": "array",
           "items": {
-            "$ref": "#/$defs/port"
+            "$ref": "#/$defs/Port"
           },
-          "description": "Data outputs produced by this step (for downstream consumption)"
+          "type": "array"
         }
-      }
-    },
-    "port": {
+      },
+      "additionalProperties": false,
       "type": "object",
-      "required": ["name"],
+      "required": [
+        "name",
+        "agent"
+      ]
+    },
+    "Team": {
       "properties": {
         "name": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9_]*$",
-          "description": "Port identifier (e.g., version_recommendation, test_results)"
+          "type": "string"
         },
-        "type": {
-          "type": "string",
-          "enum": ["string", "number", "boolean", "object", "array", "file"],
-          "default": "string",
-          "description": "Data type of this port"
+        "version": {
+          "type": "string"
         },
         "description": {
-          "type": "string",
-          "description": "Human-readable description of this data"
+          "type": "string"
         },
-        "required": {
-          "type": "boolean",
-          "default": true,
-          "description": "Whether this input is required (inputs only)"
+        "agents": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
         },
-        "from": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*\\.[a-z][a-z0-9_]*$",
-          "description": "Source reference as 'step_name.output_name' (inputs only)"
+        "orchestrator": {
+          "type": "string"
         },
-        "schema": {
-          "type": "object",
-          "description": "JSON Schema for validating this port's data"
+        "workflow": {
+          "$ref": "#/$defs/Workflow"
         },
-        "default": {
-          "description": "Default value if not provided (inputs only)"
+        "context": {
+          "type": "string"
         }
-      }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "version",
+        "agents"
+      ]
+    },
+    "Workflow": {
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/WorkflowType"
+        },
+        "steps": {
+          "items": {
+            "$ref": "#/$defs/Step"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "WorkflowType": {
+      "type": "string",
+      "enum": [
+        "sequential",
+        "parallel",
+        "dag",
+        "orchestrated"
+      ],
+      "description": "Workflow execution pattern",
+      "default": "orchestrated"
     }
-  }
+  },
+  "title": "Multi-Agent Spec - Team Definition",
+  "description": "Schema for defining a team of AI agents with orchestration"
 }

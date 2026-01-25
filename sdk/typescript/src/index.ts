@@ -20,59 +20,10 @@
  * ```
  */
 
-// Re-export all schemas
-export {
-  // Agent schemas
-  ToolSchema,
-  ModelSchema,
-  AgentSchema,
-  // Team/Orchestration schemas
-  StepSchema,
-  WorkflowTypeSchema,
-  WorkflowSchema,
-  TeamSchema,
-  // Deployment schemas
-  PlatformSchema,
-  PrioritySchema,
-  TargetSchema,
-  DeploymentSchema,
-  // Platform config schemas
-  ClaudeCodeConfigSchema,
-  KiroCliConfigSchema,
-  AwsAgentCoreConfigSchema,
-  KubernetesConfigSchema,
-  AgentKitLocalConfigSchema,
-  PlatformConfigSchema,
-} from "./schemas";
+// Re-export all generated schemas and types
+export * from "./generated/index.js";
 
-// Re-export all types
-export type {
-  // Agent types
-  Tool,
-  Model,
-  Agent,
-  // Team/Orchestration types
-  Step,
-  WorkflowType,
-  Workflow,
-  Team,
-  // Deployment types
-  Platform,
-  Priority,
-  Target,
-  Deployment,
-  // Platform config types
-  ClaudeCodeConfig,
-  KiroCliConfig,
-  AwsAgentCoreConfig,
-  KubernetesConfig,
-  AgentKitLocalConfig,
-} from "./schemas";
-
-// =============================================================================
-// Utility Functions
-// =============================================================================
-
+// Import for utility functions
 import {
   AgentSchema,
   TeamSchema,
@@ -80,7 +31,11 @@ import {
   type Agent,
   type Team,
   type Deployment,
-} from "./schemas";
+} from "./generated/index.js";
+
+// =============================================================================
+// Utility Functions
+// =============================================================================
 
 /**
  * Parse and validate an agent definition.

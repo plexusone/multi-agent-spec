@@ -1,140 +1,132 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/agent/agent.schema.json",
-  "title": "Multi-Agent Spec - Agent Definition",
-  "description": "Schema for defining an AI agent in a multi-agent system",
-  "type": "object",
-  "required": ["name", "description"],
-  "properties": {
-    "name": {
-      "type": "string",
-      "pattern": "^[a-z][a-z0-9-]*$",
-      "description": "Unique identifier for the agent (lowercase, hyphenated)"
-    },
-    "namespace": {
-      "type": "string",
-      "pattern": "^[a-z][a-z0-9-]*$",
-      "description": "Optional namespace for organizing agents (derived from subdirectory if not specified)"
-    },
-    "description": {
-      "type": "string",
-      "description": "Brief description of the agent's purpose and capabilities"
-    },
-    "icon": {
-      "type": "string",
-      "description": "Icon identifier for visual representation. Formats: 'brandkit:name' (from brandkit repo), 'lucide:name' (Lucide icon), or plain name for inference"
-    },
-    "model": {
-      "type": "string",
-      "enum": ["haiku", "sonnet", "opus"],
-      "default": "sonnet",
-      "description": "Model capability tier (mapped to platform-specific models)"
-    },
-    "tools": {
-      "type": "array",
-      "items": {
-        "$ref": "#/$defs/tool"
-      },
-      "description": "List of tools the agent can use"
-    },
-    "skills": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "List of skills the agent can invoke"
-    },
-    "dependencies": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Other agents this agent depends on or can spawn"
-    },
-    "requires": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "External tools or binaries required (e.g., go, git, golangci-lint)"
-    },
-    "instructions": {
-      "type": "string",
-      "description": "System prompt / instructions for the agent"
-    },
-    "tasks": {
-      "type": "array",
-      "description": "Tasks this agent can perform",
-      "items": {
-        "$ref": "#/$defs/task"
-      }
-    }
-  },
+  "$ref": "#/$defs/Agent",
   "$defs": {
-    "tool": {
-      "type": "string",
-      "enum": [
-        "WebSearch",
-        "WebFetch",
-        "Read",
-        "Write",
-        "Glob",
-        "Grep",
-        "Bash",
-        "Edit",
-        "Task"
-      ],
-      "description": "Canonical tool name (mapped to platform-specific names)"
-    },
-    "task": {
-      "type": "object",
-      "required": ["id", "description"],
+    "Agent": {
       "properties": {
-        "id": {
-          "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*$",
-          "description": "Unique task identifier within this agent"
+        "name": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
         },
         "description": {
-          "type": "string",
-          "description": "What this task validates or accomplishes"
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "model": {
+          "$ref": "#/$defs/Model"
+        },
+        "tools": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "allowedTools": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "skills": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "dependencies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "requires": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "instructions": {
+          "type": "string"
+        },
+        "tasks": {
+          "items": {
+            "$ref": "#/$defs/Task"
+          },
+          "type": "array"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    },
+    "Model": {
+      "type": "string",
+      "enum": [
+        "haiku",
+        "sonnet",
+        "opus"
+      ],
+      "description": "Model capability tier (mapped to platform-specific models)",
+      "default": "sonnet"
+    },
+    "Task": {
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
         },
         "type": {
-          "type": "string",
-          "enum": ["command", "pattern", "file", "manual"],
-          "default": "manual",
-          "description": "How the task is executed"
+          "$ref": "#/$defs/TaskType"
         },
         "command": {
-          "type": "string",
-          "description": "Shell command to execute (for type: command)"
+          "type": "string"
         },
         "pattern": {
-          "type": "string",
-          "description": "Regex pattern to search for (for type: pattern)"
+          "type": "string"
         },
         "file": {
-          "type": "string",
-          "description": "File path to check (for type: file)"
+          "type": "string"
         },
         "files": {
-          "type": "string",
-          "description": "Glob pattern for files to check (for type: pattern)"
+          "type": "string"
         },
         "required": {
-          "type": "boolean",
-          "default": true,
-          "description": "If true, task failure causes agent to report NO-GO"
+          "type": "boolean"
         },
         "expected_output": {
-          "type": "string",
-          "description": "Description of what constitutes success"
+          "type": "string"
         },
         "human_in_loop": {
-          "type": "string",
-          "description": "When to prompt for human intervention"
+          "type": "string"
         }
-      }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id"
+      ]
+    },
+    "TaskType": {
+      "type": "string",
+      "enum": [
+        "command",
+        "pattern",
+        "file",
+        "manual"
+      ],
+      "description": "How the task is executed",
+      "default": "manual"
     }
-  }
+  },
+  "title": "Multi-Agent Spec - Agent Definition",
+  "description": "Schema for defining an AI agent in a multi-agent system"
 }
