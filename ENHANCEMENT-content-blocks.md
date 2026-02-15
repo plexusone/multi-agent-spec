@@ -1,5 +1,7 @@
 # Enhancement: Content Blocks in Team Reports
 
+**Status**: Implemented in sdk/go v0.6.0
+
 ## Problem
 
 The current report schema supports only flat task lists (one status line per task). Complex analysis workflows produce richer output — findings lists, key-value summaries, action items, metrics — that don't fit the `tasks` array model.
@@ -10,188 +12,165 @@ Today, agents either:
 - Generate box-formatted text directly (inconsistent, unparseable)
 - Produce a separate narrative outside the report schema (two disconnected outputs)
 
-## Proposal
+## Solution
 
-Add an optional `content_blocks` array to `team` and `task` objects, plus a top-level `footer_blocks` array on the report. This keeps backward compatibility — existing reports with only `tasks` still render identically.
+Added optional content block arrays to TeamReport and TeamSection, plus constructors and rendering support in the Go SDK. Existing reports with only `tasks` still render identically (backward compatible).
 
 ### Block Types
 
 | Type | Fields | Use Case |
 |---|---|---|
-| `text` | `title?`, `body` | Descriptions, narratives (auto-wrapped) |
+| `text` | `title?`, `content` | Descriptions, narratives (auto-wrapped) |
 | `kv_pairs` | `title?`, `pairs: [{key, value, icon?}]` | Metadata, summary stats, config |
-| `list` | `title?`, `items: [{text, icon?}]` | Findings, action items, recommendations |
+| `list` | `title?`, `items: [{text, icon?, status?}]` | Findings, action items, recommendations |
 | `table` | `title?`, `headers`, `rows` | Comparison matrices, coverage reports |
 | `metric` | `label`, `value`, `status`, `target?` | Coverage %, scores |
 
-### Schema Changes
+### Go SDK Types
 
-`team-report.schema.json` additions:
+```go
+// ContentBlockType discriminates content block variants.
+type ContentBlockType string
 
-```json
-{
-  "definitions": {
-    "content_block": {
-      "oneOf": [
-        {
-          "type": "object",
-          "properties": {
-            "type": { "const": "text" },
-            "title": { "type": "string" },
-            "body": { "type": "string" }
-          },
-          "required": ["type", "body"]
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": { "const": "kv_pairs" },
-            "title": { "type": "string" },
-            "pairs": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "key": { "type": "string" },
-                  "value": { "type": "string" },
-                  "icon": { "type": "string" }
-                },
-                "required": ["key", "value"]
-              }
-            }
-          },
-          "required": ["type", "pairs"]
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": { "const": "list" },
-            "title": { "type": "string" },
-            "items": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "text": { "type": "string" },
-                  "icon": { "type": "string" }
-                },
-                "required": ["text"]
-              }
-            }
-          },
-          "required": ["type", "items"]
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": { "const": "table" },
-            "title": { "type": "string" },
-            "headers": { "type": "array", "items": { "type": "string" } },
-            "rows": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } }
-          },
-          "required": ["type", "headers", "rows"]
-        },
-        {
-          "type": "object",
-          "properties": {
-            "type": { "const": "metric" },
-            "label": { "type": "string" },
-            "value": { "type": "string" },
-            "status": { "enum": ["GO", "WARN", "NO-GO", "SKIP"] },
-            "target": { "type": "string" }
-          },
-          "required": ["type", "label", "value", "status"]
-        }
-      ]
-    }
-  }
+const (
+    ContentBlockKVPairs ContentBlockType = "kv_pairs"
+    ContentBlockList    ContentBlockType = "list"
+    ContentBlockTable   ContentBlockType = "table"
+    ContentBlockText    ContentBlockType = "text"
+    ContentBlockMetric  ContentBlockType = "metric"
+)
+
+// ContentBlock represents rich content within a report section.
+type ContentBlock struct {
+    Type    ContentBlockType `json:"type"`
+    Title   string           `json:"title,omitempty"`
+    Pairs   []KVPair         `json:"pairs,omitempty"`   // for kv_pairs
+    Items   []ListItem       `json:"items,omitempty"`   // for list
+    Headers []string         `json:"headers,omitempty"` // for table
+    Rows    [][]string       `json:"rows,omitempty"`    // for table
+    Content string           `json:"content,omitempty"` // for text
+    Label   string           `json:"label,omitempty"`   // for metric
+    Value   string           `json:"value,omitempty"`   // for metric
+    Status  Status           `json:"status,omitempty"`  // for metric
+    Target  string           `json:"target,omitempty"`  // for metric
+}
+
+// KVPair is a key-value pair with optional icon.
+type KVPair struct {
+    Key   string `json:"key"`
+    Value string `json:"value"`
+    Icon  string `json:"icon,omitempty"`
+}
+
+// ListItem is a list entry with optional icon and status.
+type ListItem struct {
+    Text   string `json:"text"`
+    Icon   string `json:"icon,omitempty"`
+    Status Status `json:"status,omitempty"`
 }
 ```
 
-Add to `team` object:
+### Constructor Functions
 
-```json
-"content_blocks": {
-  "type": "array",
-  "items": { "$ref": "#/definitions/content_block" }
-}
+```go
+NewKVPairsBlock(title string, pairs ...KVPair) ContentBlock
+NewListBlock(title string, items ...ListItem) ContentBlock
+NewTextBlock(title, content string) ContentBlock
+NewTableBlock(title string, headers []string, rows [][]string) ContentBlock
+NewMetricBlock(label, value string, status Status, target string) ContentBlock
 ```
 
-Add to report root:
+### TeamReport Extensions
 
-```json
-"footer_blocks": {
-  "type": "array",
-  "items": { "$ref": "#/definitions/content_block" }
+```go
+type TeamReport struct {
+    // ... existing fields ...
+
+    // Title is the report title (defaults to "TEAM STATUS REPORT").
+    Title string `json:"title,omitempty"`
+
+    // SummaryBlocks appear after the header, before the phase.
+    SummaryBlocks []ContentBlock `json:"summary_blocks,omitempty"`
+
+    // FooterBlocks appear after all teams, before the final message.
+    FooterBlocks []ContentBlock `json:"footer_blocks,omitempty"`
+}
+
+type TeamSection struct {
+    // ... existing fields ...
+
+    // Tasks is now optional (can use ContentBlocks instead).
+    Tasks []TaskResult `json:"tasks,omitempty"`
+
+    // ContentBlocks holds rich content for this team section.
+    ContentBlocks []ContentBlock `json:"content_blocks,omitempty"`
 }
 ```
-
-### Go SDK Changes
-
-Extend `sdk/go` with:
-
-1. `ContentBlock` type (union via `Type` field discriminator)
-2. Add `ContentBlocks []ContentBlock` to `TeamResult` struct
-3. Add `FooterBlocks []ContentBlock` to `TeamReport` struct
-4. Extend `Renderer.Render()` to emit content blocks after task lines
-5. Add `Renderer.RenderNarrative()` for Markdown prose output
 
 ### Box Format Rendering
 
 Content blocks render inside the box after the team's task lines:
 
 ```
-║ security-analysis (security)                                                 ║
-║   dependency-scan          WARN  5 findings (2 HIGH, 3 MEDIUM)               ║
-║   StrictHostKeyChecking disabled (HIGH)                                      ║
-║   Outdated JSch 0.1.55 - CVE-2016-5725 (HIGH)                               ║
-║   Outdated AWS SDK 1.12.192 (MEDIUM)                                         ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ Security Analysis (security-analysis)                                        ║
+║   dependency-scan          🟡 WARN  5 findings (2 HIGH, 3 MEDIUM)            ║
+║ 🔴 StrictHostKeyChecking disabled (HIGH)                                     ║
+║ 🔴 Outdated JSch 0.1.55 - CVE-2016-5725 (HIGH)                               ║
+║ 🟡 Outdated AWS SDK 1.12.192 (MEDIUM)                                        ║
 ```
 
 Footer blocks render before the final status line:
 
 ```
+╠══════════════════════════════════════════════════════════════════════════════╣
 ║ ACTION ITEMS                                                                 ║
-║   1: Upgrade JSch to 0.2.18                                                  ║
-║   2: Upgrade AWS SDK to 2.25.x                                               ║
+║ 🔴 1: Upgrade JSch to 0.2.18                                                 ║
+║ 🟡 2: Upgrade AWS SDK to 2.25.x                                              ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║                       🚀 TEAM: GO for v1.0.0 🚀                              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-### Narrative Rendering
+Metrics with targets render as:
 
-New `RenderNarrative()` method produces Markdown:
-
-```markdown
-## Security Analysis
-
-**Status**: WARN
-
-### Tasks
-
-| Task | Status | Detail |
-|---|---|---|
-| dependency-scan | WARN | 5 findings (2 HIGH, 3 MEDIUM) |
-
-### Findings
-
-- StrictHostKeyChecking disabled (HIGH)
-- Outdated JSch 0.1.55 - CVE-2016-5725 (HIGH)
-- Outdated AWS SDK 1.12.192 (MEDIUM)
 ```
+║ 🟢 Coverage: 85% (target: 80%)                                               ║
+```
+
+## Schema
+
+The JSON schema is auto-generated from Go types. See `schema/report/team-report.schema.json`.
+
+Key definitions:
+
+- `ContentBlock` - union type with `type` discriminator
+- `ContentBlockType` - enum: `kv_pairs`, `list`, `table`, `text`, `metric`
+- `KVPair` - key/value with optional icon
+- `ListItem` - text with optional icon/status
 
 ## Backward Compatibility
 
-- `content_blocks` and `footer_blocks` are optional
+- `content_blocks`, `summary_blocks`, and `footer_blocks` are optional
+- `tasks` field is now optional on TeamSection
 - Existing reports without these fields render identically
 - Existing consumers that don't read these fields are unaffected
-- No changes to `agent-result.schema.json` required (agents produce `content_blocks` in their team output, coordinator passes them through)
 
-## Reference Implementation
+## Files Changed
 
-A Python prototype renderer exists at:
+| File | Change |
+|------|--------|
+| `sdk/go/content_block.go` | New types and constructors |
+| `sdk/go/content_block_test.go` | Tests |
+| `sdk/go/report.go` | Extended TeamReport, TeamSection, AgentResult |
+| `sdk/go/renderer.go` | Content block rendering |
+| `sdk/go/jsonschema.go` | ContentBlockType schema |
+| `schema/report/team-report.schema.json` | Regenerated |
 
-`gitlab.com/saviynt/product/agents/custom-extension-analysis-team/render_report.py`
+## Future Work
 
-This should be replaced by the Go SDK implementation once this enhancement ships.
+- `RenderNarrative()` method for Markdown output
+- Content blocks on TaskResult (if needed)
 
 ## Motivation
 
