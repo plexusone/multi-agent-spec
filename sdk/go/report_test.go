@@ -196,3 +196,19 @@ func TestStatusIcon(t *testing.T) {
 		})
 	}
 }
+
+func TestEffectiveTitle(t *testing.T) {
+	t.Run("returns custom title when set", func(t *testing.T) {
+		report := &TeamReport{Title: "CUSTOM REPORT"}
+		if got := report.EffectiveTitle(); got != "CUSTOM REPORT" {
+			t.Errorf("expected CUSTOM REPORT, got %s", got)
+		}
+	})
+
+	t.Run("returns default when empty", func(t *testing.T) {
+		report := &TeamReport{}
+		if got := report.EffectiveTitle(); got != "TEAM STATUS REPORT" {
+			t.Errorf("expected TEAM STATUS REPORT, got %s", got)
+		}
+	})
+}
