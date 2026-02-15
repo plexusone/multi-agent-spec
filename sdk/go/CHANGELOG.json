@@ -1,24 +1,56 @@
 {
-  "ir_version": "1.0",
+  "irVersion": "1.0",
   "project": "multi-agent-spec/sdk/go",
   "repository": "https://github.com/agentplexus/multi-agent-spec",
-  "tag_path": "sdk/go",
+  "tagPath": "sdk/go",
   "versioning": "semver",
-  "commit_convention": "conventional",
+  "commitConvention": "conventional",
   "maintainers": ["agentplexus"],
   "releases": [
+    {
+      "version": "v0.6.0",
+      "date": "2026-02-14",
+      "highlights": [
+        { "description": "Content blocks for rich report content (`list`, `table`, `metric`, `kv_pairs`, `text`)" },
+        { "description": "`NarrativeRenderer` for Pandoc-friendly Markdown output" },
+        { "description": "LLM evaluation types for hybrid rule + AI evaluation workflows" }
+      ],
+      "added": [
+        { "description": "`ContentBlock`, `ContentBlockType`, `KVPair`, `ListItem` types", "commit": "2544aee" },
+        { "description": "`NewKVPairsBlock()`, `NewListBlock()`, `NewTableBlock()`, `NewTextBlock()`, `NewMetricBlock()` constructors", "commit": "2544aee" },
+        { "description": "`TeamReport.Title`, `SummaryBlocks`, `FooterBlocks`, `Summary`, `Conclusion` fields", "commit": "2544aee" },
+        { "description": "`TeamReport.EffectiveTitle()` method for title defaulting", "commit": "2544aee" },
+        { "description": "`TeamSection.ContentBlocks` field for rich team content", "commit": "2544aee" },
+        { "description": "`TeamSection.Narrative` (`*NarrativeSection`) for prose content", "commit": "2544aee" },
+        { "description": "`AgentResult.ContentBlocks` field", "commit": "2544aee" },
+        { "description": "`NarrativeRenderer` for Pandoc-friendly Markdown output", "commit": "2544aee" },
+        { "description": "`NarrativeSection` type with `Problem`, `Analysis`, `Recommendation` fields", "commit": "2544aee" },
+        { "description": "`EvaluationType` enum: `rule`, `llm`, `combined`", "commit": "14b27e6" },
+        { "description": "`LLMEvaluation` type with `score`, `confidence`, `reasoning`, `model`, `provider`", "commit": "14b27e6" },
+        { "description": "`CombinedWeights` for hybrid rule + LLM scoring", "commit": "14b27e6" },
+        { "description": "`Issue` type for detailed problem tracking", "commit": "14b27e6" },
+        { "description": "`Severity` enum: `critical`, `major`, `minor`, `suggestion`", "commit": "14b27e6" },
+        { "description": "`Effort` enum: `trivial`, `low`, `medium`, `high`", "commit": "14b27e6" },
+        { "description": "Content block rendering in `Renderer` (`kv_pairs`, `list`, `table`, `text`, `metric`)", "commit": "2544aee" },
+        { "description": "`ListItem.EffectiveIcon()` method for status-to-icon derivation", "commit": "2544aee" }
+      ],
+      "changed": [
+        { "description": "`TeamSection.Tasks` is now optional (use `ContentBlocks` for flexible content)", "commit": "2544aee" },
+        { "description": "`Renderer` supports `SummaryBlocks`, team `ContentBlocks`, and `FooterBlocks`", "commit": "2544aee" }
+      ]
+    },
     {
       "version": "v0.5.0",
       "date": "2026-01-25",
       "highlights": [
-        { "description": "Replace Target.Config with typed platform config fields (breaking change)" },
-        { "description": "Add codegen support with JSONSchema() methods on enum types" }
+        { "description": "Replace `Target.Config` with typed platform config fields (breaking change)" },
+        { "description": "Add codegen support with `JSONSchema()` methods on enum types" }
       ],
       "added": [
-        { "description": "JSONSchema() methods on Model, Tool, TaskType, WorkflowType, Platform, Priority, DeploymentMode, PortType, Status for proper JSON Schema generation", "commit": "3efe29e" },
-        { "description": "Typed platform config fields on Target: ClaudeCode, GeminiCLI, KiroCLI, ADKGo, CrewAI, AutoGen, AWSAgentCore, Kubernetes, DockerCompose, AgentKitLocal", "commit": "57cc235" },
-        { "description": "New platform constants: PlatformGeminiCLI, PlatformADKGo, PlatformCrewAI, PlatformAutoGen", "commit": "57cc235" },
-        { "description": "New config types: GeminiCLIConfig, ADKGoConfig, CrewAIConfig, AutoGenConfig, CodeExecutionConfig", "commit": "57cc235" },
+        { "description": "`JSONSchema()` methods on `Model`, `Tool`, `TaskType`, `WorkflowType`, `Platform`, `Priority`, `DeploymentMode`, `PortType`, `Status` for proper JSON Schema generation", "commit": "3efe29e" },
+        { "description": "Typed platform config fields on `Target`: `ClaudeCode`, `GeminiCLI`, `KiroCLI`, `ADKGo`, `CrewAI`, `AutoGen`, `AWSAgentCore`, `Kubernetes`, `DockerCompose`, `AgentKitLocal`", "commit": "57cc235" },
+        { "description": "New platform constants: `PlatformGeminiCLI`, `PlatformADKGo`, `PlatformCrewAI`, `PlatformAutoGen`", "commit": "57cc235" },
+        { "description": "New config types: `GeminiCLIConfig`, `ADKGoConfig`, `CrewAIConfig`, `AutoGenConfig`, `CodeExecutionConfig`", "commit": "57cc235" },
         { "description": "Tests for all new platform configs", "commit": "57cc235" }
       ],
       "changed": [
@@ -32,10 +64,10 @@
       "version": "v0.4.1",
       "date": "2026-01-24",
       "fixed": [
-        { "description": "Report table alignment - update boxWidth from 76 to 78 for proper 80-character terminal width", "commit": "d63e76a" }
+        { "description": "Report table alignment - update `boxWidth` from 76 to 78 for proper 80-character terminal width", "commit": "d63e76a" }
       ],
       "added": [
-        { "description": "Icon field on Agent struct", "commit": "9e6fd52" }
+        { "description": "`Icon` field on `Agent` struct", "commit": "9e6fd52" }
       ]
     },
     {
@@ -67,22 +99,22 @@
         { "description": "Add typed ports for workflow data flow, runtime configuration, and support for new platforms (Gemini CLI, ADK Go, CrewAI, AutoGen)" }
       ],
       "added": [
-        { "description": "Task and TaskType for agent task definitions", "commit": "c3ccefc" },
-        { "description": "Port and PortType for typed workflow inputs/outputs", "commit": "c3ccefc" },
-        { "description": "DeploymentMode enum (single-process, multi-process, distributed, serverless)", "commit": "c3ccefc" },
-        { "description": "RuntimeConfig, StepRuntime, RetryPolicy for workflow execution", "commit": "c3ccefc" },
-        { "description": "ObservabilityConfig for tracing, metrics, and logging", "commit": "c3ccefc" },
-        { "description": "GeminiCLIConfig for Google Gemini CLI Assistant", "commit": "c3ccefc" },
-        { "description": "ADKGoConfig for Google Agent Development Kit (Go)", "commit": "c3ccefc" },
-        { "description": "CrewAIConfig for CrewAI multi-agent framework", "commit": "c3ccefc" },
-        { "description": "AutoGenConfig for Microsoft AutoGen framework", "commit": "c3ccefc" },
-        { "description": "DockerComposeConfig for local Docker deployment", "commit": "c3ccefc" },
-        { "description": "Requires field on Agent for external tool dependencies", "commit": "c3ccefc" },
-        { "description": "Tasks field on Agent for task definitions", "commit": "c3ccefc" }
+        { "description": "`Task` and `TaskType` for agent task definitions", "commit": "c3ccefc" },
+        { "description": "`Port` and `PortType` for typed workflow inputs/outputs", "commit": "c3ccefc" },
+        { "description": "`DeploymentMode` enum (`single-process`, `multi-process`, `distributed`, `serverless`)", "commit": "c3ccefc" },
+        { "description": "`RuntimeConfig`, `StepRuntime`, `RetryPolicy` for workflow execution", "commit": "c3ccefc" },
+        { "description": "`ObservabilityConfig` for tracing, metrics, and logging", "commit": "c3ccefc" },
+        { "description": "`GeminiCLIConfig` for Google Gemini CLI Assistant", "commit": "c3ccefc" },
+        { "description": "`ADKGoConfig` for Google Agent Development Kit (Go)", "commit": "c3ccefc" },
+        { "description": "`CrewAIConfig` for CrewAI multi-agent framework", "commit": "c3ccefc" },
+        { "description": "`AutoGenConfig` for Microsoft AutoGen framework", "commit": "c3ccefc" },
+        { "description": "`DockerComposeConfig` for local Docker deployment", "commit": "c3ccefc" },
+        { "description": "`Requires` field on `Agent` for external tool dependencies", "commit": "c3ccefc" },
+        { "description": "`Tasks` field on `Agent` for task definitions", "commit": "c3ccefc" }
       ],
       "changed": [
-        { "description": "Step.Inputs changed from map[string]string to []Port", "commit": "c3ccefc" },
-        { "description": "Step.Outputs changed from []string to []Port", "commit": "c3ccefc" }
+        { "description": "`Step.Inputs` changed from `map[string]string` to `[]Port`", "commit": "c3ccefc" },
+        { "description": "`Step.Outputs` changed from `[]string` to `[]Port`", "commit": "c3ccefc" }
       ],
       "documentation": [
         { "description": "Add Deployment Modes and Runtime Configuration sections to README", "commit": "5fe2911" },
@@ -93,12 +125,12 @@
       "version": "v0.2.0",
       "date": "2026-01-17",
       "highlights": [
-        { "description": "Rename Check to TaskResult for consistency with multi-agent-spec task terminology" }
+        { "description": "Rename `Check` to `TaskResult` for consistency with multi-agent-spec task terminology" }
       ],
       "changed": [
-        { "description": "Rename Check struct to TaskResult", "commit": "3fd7604" },
-        { "description": "Rename Checks field to Tasks in AgentResult and TeamSection", "commit": "3fd7604" },
-        { "description": "Add backward compatibility alias Check = TaskResult", "commit": "3fd7604" }
+        { "description": "Rename `Check` struct to `TaskResult`", "commit": "3fd7604" },
+        { "description": "Rename `Checks` field to `Tasks` in `AgentResult` and `TeamSection`", "commit": "3fd7604" },
+        { "description": "Add backward compatibility alias `Check = TaskResult`", "commit": "3fd7604" }
       ],
       "documentation": [
         { "description": "Add specs/ directory structure convention to README", "commit": "518a2b2" }
@@ -111,8 +143,8 @@
         { "description": "Add DAG-aware topological sorting for team reports based on step dependencies" }
       ],
       "added": [
-        { "description": "TeamReport.SortByDAG() method using Kahn's algorithm", "commit": "9c999e2" },
-        { "description": "DependsOn field on TeamSection for DAG edges", "commit": "9c999e2" },
+        { "description": "`TeamReport.SortByDAG()` method using Kahn's algorithm", "commit": "9c999e2" },
+        { "description": "`DependsOn` field on `TeamSection` for DAG edges", "commit": "9c999e2" },
         { "description": "Alphabetical ordering at each DAG level for deterministic output", "commit": "9c999e2" }
       ]
     },
@@ -123,14 +155,14 @@
         { "description": "Add team status report IR and renderer for NASA-style Go/No-Go validation reports" }
       ],
       "added": [
-        { "description": "Status type with GO, WARN, NO-GO, SKIP constants", "commit": "579ee6d" },
-        { "description": "Check struct for individual validation results", "commit": "579ee6d" },
-        { "description": "AgentResult struct for agent outputs with inputs/outputs", "commit": "579ee6d" },
-        { "description": "TeamSection struct for report sections", "commit": "579ee6d" },
-        { "description": "TeamReport struct with project, version, phase, teams", "commit": "579ee6d" },
-        { "description": "Renderer for ASCII box-drawing report output", "commit": "579ee6d" },
-        { "description": "ComputeStatus, IsGo, FinalMessage helper methods", "commit": "579ee6d" },
-        { "description": "AggregateResults for combining AgentResults into TeamReport", "commit": "579ee6d" }
+        { "description": "`Status` type with `GO`, `WARN`, `NO-GO`, `SKIP` constants", "commit": "579ee6d" },
+        { "description": "`Check` struct for individual validation results", "commit": "579ee6d" },
+        { "description": "`AgentResult` struct for agent outputs with inputs/outputs", "commit": "579ee6d" },
+        { "description": "`TeamSection` struct for report sections", "commit": "579ee6d" },
+        { "description": "`TeamReport` struct with `project`, `version`, `phase`, `teams`", "commit": "579ee6d" },
+        { "description": "`Renderer` for ASCII box-drawing report output", "commit": "579ee6d" },
+        { "description": "`ComputeStatus()`, `IsGo()`, `FinalMessage()` helper methods", "commit": "579ee6d" },
+        { "description": "`AggregateResults()` for combining `AgentResults` into `TeamReport`", "commit": "579ee6d" }
       ],
       "documentation": [
         { "description": "Add Installation section with Go SDK tagging notes to README", "commit": "70b7f1e" }
@@ -143,15 +175,15 @@
         { "description": "Initial release of Go SDK for multi-agent-spec with type definitions and platform mappings" }
       ],
       "added": [
-        { "description": "Agent struct with Name, Description, Model, Tools, Skills, Dependencies, Instructions", "commit": "ff347db" },
-        { "description": "Team struct with Name, Version, Agents, Orchestrator, Workflow, Context", "commit": "ff347db" },
-        { "description": "Deployment struct with Team and Targets", "commit": "ff347db" },
-        { "description": "Model constants (haiku, sonnet, opus)", "commit": "ff347db" },
-        { "description": "Tool constants (WebSearch, WebFetch, Read, Write, Glob, Grep, Bash, Edit, Task)", "commit": "ff347db" },
-        { "description": "Platform constants for supported deployment targets", "commit": "ff347db" },
-        { "description": "Platform-specific config structs (ClaudeCode, KiroCLI, AWSAgentCore, Kubernetes)", "commit": "ff347db" },
+        { "description": "`Agent` struct with `Name`, `Description`, `Model`, `Tools`, `Skills`, `Dependencies`, `Instructions`", "commit": "ff347db" },
+        { "description": "`Team` struct with `Name`, `Version`, `Agents`, `Orchestrator`, `Workflow`, `Context`", "commit": "ff347db" },
+        { "description": "`Deployment` struct with `Team` and `Targets`", "commit": "ff347db" },
+        { "description": "`Model` constants (`haiku`, `sonnet`, `opus`)", "commit": "ff347db" },
+        { "description": "`Tool` constants (`WebSearch`, `WebFetch`, `Read`, `Write`, `Glob`, `Grep`, `Bash`, `Edit`, `Task`)", "commit": "ff347db" },
+        { "description": "`Platform` constants for supported deployment targets", "commit": "ff347db" },
+        { "description": "Platform-specific config structs (`ClaudeCode`, `KiroCLI`, `AWSAgentCore`, `Kubernetes`)", "commit": "ff347db" },
         { "description": "Model and tool mapping functions for cross-platform translation", "commit": "ff347db" },
-        { "description": "Builder pattern methods (NewAgent, WithModel, WithTools, etc.)", "commit": "ff347db" }
+        { "description": "Builder pattern methods (`NewAgent()`, `WithModel()`, `WithTools()`, etc.)", "commit": "ff347db" }
       ]
     }
   ]

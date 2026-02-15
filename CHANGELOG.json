@@ -1,11 +1,38 @@
 {
-  "ir_version": "1.0",
+  "irVersion": "1.0",
   "project": "multi-agent-spec",
   "repository": "https://github.com/agentplexus/multi-agent-spec",
   "versioning": "semver",
-  "commit_convention": "conventional",
+  "commitConvention": "conventional",
   "maintainers": ["agentplexus"],
   "releases": [
+    {
+      "version": "v0.5.0",
+      "date": "2026-02-14",
+      "highlights": [
+        { "description": "Content blocks for rich report content (lists, tables, metrics, kv_pairs)" },
+        { "description": "Narrative renderer for Pandoc-friendly Markdown output" },
+        { "description": "mas CLI tool for rendering team reports" }
+      ],
+      "added": [
+        { "description": "ContentBlock types: kv_pairs, list, table, text, metric", "commit": "2544aee" },
+        { "description": "Constructor functions: NewKVPairsBlock, NewListBlock, NewTableBlock, NewTextBlock, NewMetricBlock", "commit": "2544aee" },
+        { "description": "TeamReport: Title, SummaryBlocks, FooterBlocks, Summary, Conclusion fields", "commit": "2544aee" },
+        { "description": "TeamSection: ContentBlocks, Narrative fields", "commit": "2544aee" },
+        { "description": "NarrativeRenderer for Pandoc-friendly Markdown (PDF-ready)", "commit": "2544aee" },
+        { "description": "LLM evaluation types: EvaluationType, LLMEvaluation, CombinedWeights, Issue, Severity, Effort", "commit": "14b27e6" },
+        { "description": "LLM evaluation extension schema (llm-evaluation.schema.json)", "commit": "56fe55e" },
+        { "description": "mas CLI: render subcommand with box and narrative formats", "commit": "5374bff" },
+        { "description": "mas CLI: --validate flag for JSON Schema validation", "commit": "5374bff" }
+      ],
+      "changed": [
+        { "description": "TeamSection.Tasks is now optional (can use ContentBlocks instead)", "commit": "2544aee" }
+      ],
+      "documentation": [
+        { "description": "ENHANCEMENT-content-blocks.md - content block design and usage", "commit": "8dbc00d" },
+        { "description": "ENHANCEMENT-render-cli.md - mas CLI documentation", "commit": "8dbc00d" }
+      ]
+    },
     {
       "version": "v0.4.0",
       "date": "2026-01-25",
