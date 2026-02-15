@@ -3,6 +3,126 @@
   "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json",
   "$ref": "#/$defs/TeamReport",
   "$defs": {
+    "ContentBlock": {
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/ContentBlockType"
+        },
+        "title": {
+          "type": "string"
+        },
+        "pairs": {
+          "items": {
+            "$ref": "#/$defs/KVPair"
+          },
+          "type": "array"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/ListItem"
+          },
+          "type": "array"
+        },
+        "headers": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "rows": {
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "array"
+        },
+        "content": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/Status"
+        },
+        "target": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "type"
+      ]
+    },
+    "ContentBlockType": {
+      "type": "string",
+      "enum": [
+        "kv_pairs",
+        "list",
+        "table",
+        "text",
+        "metric"
+      ],
+      "description": "Content block type discriminator"
+    },
+    "KVPair": {
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "key",
+        "value"
+      ]
+    },
+    "ListItem": {
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/Status"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "text"
+      ]
+    },
+    "NarrativeSection": {
+      "properties": {
+        "problem": {
+          "type": "string"
+        },
+        "analysis": {
+          "type": "string"
+        },
+        "recommendation": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
     "Status": {
       "type": "string",
       "enum": [
@@ -43,6 +163,9 @@
         "$schema": {
           "type": "string"
         },
+        "title": {
+          "type": "string"
+        },
         "project": {
           "type": "string"
         },
@@ -55,11 +178,29 @@
         "phase": {
           "type": "string"
         },
+        "summary_blocks": {
+          "items": {
+            "$ref": "#/$defs/ContentBlock"
+          },
+          "type": "array"
+        },
         "teams": {
           "items": {
             "$ref": "#/$defs/TeamSection"
           },
           "type": "array"
+        },
+        "footer_blocks": {
+          "items": {
+            "$ref": "#/$defs/ContentBlock"
+          },
+          "type": "array"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "conclusion": {
+          "type": "string"
         },
         "status": {
           "$ref": "#/$defs/Status"
@@ -111,6 +252,15 @@
         },
         "status": {
           "$ref": "#/$defs/Status"
+        },
+        "content_blocks": {
+          "items": {
+            "$ref": "#/$defs/ContentBlock"
+          },
+          "type": "array"
+        },
+        "narrative": {
+          "$ref": "#/$defs/NarrativeSection"
         }
       },
       "additionalProperties": false,
@@ -118,7 +268,6 @@
       "required": [
         "id",
         "name",
-        "tasks",
         "status"
       ]
     }
