@@ -186,8 +186,10 @@ type ClaudeCodeConfig struct {
 
 // KiroCLIConfig is the configuration for Kiro CLI platform.
 type KiroCLIConfig struct {
-	PluginDir string `json:"pluginDir"`
-	Format    string `json:"format"`
+	PluginDir string `json:"pluginDir,omitempty"`
+	Format    string `json:"format,omitempty"`
+	// Prefix is applied to agent names, filenames, and steering files for namespace isolation.
+	Prefix string `json:"prefix,omitempty"`
 }
 
 // AWSAgentCoreConfig is the configuration for AWS AgentCore platform.

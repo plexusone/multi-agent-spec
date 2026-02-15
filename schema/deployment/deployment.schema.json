@@ -187,14 +187,14 @@
         },
         "format": {
           "type": "string"
+        },
+        "prefix": {
+          "type": "string",
+          "description": "Prefix applied to agent names, filenames, and steering files for namespace isolation"
         }
       },
       "additionalProperties": false,
-      "type": "object",
-      "required": [
-        "pluginDir",
-        "format"
-      ]
+      "type": "object"
     },
     "KubernetesConfig": {
       "properties": {

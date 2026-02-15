@@ -7,7 +7,7 @@
       "platform": "claude-code",
       "priority": "p1",
       "output": ".claude/agents",
-      "config": {
+      "claudeCode": {
         "agentDir": ".claude/agents",
         "format": "markdown"
       }
@@ -17,9 +17,10 @@
       "platform": "kiro-cli",
       "priority": "p1",
       "output": "plugins/kiro/agents",
-      "config": {
+      "kiroCli": {
         "pluginDir": "plugins/kiro/agents",
-        "format": "json"
+        "format": "json",
+        "prefix": "stats_"
       }
     },
     {
@@ -27,7 +28,7 @@
       "platform": "agentkit-local",
       "priority": "p1",
       "output": "plugins/agentkit",
-      "config": {
+      "agentKitLocal": {
         "transport": "stdio"
       }
     },
@@ -36,7 +37,7 @@
       "platform": "aws-agentcore",
       "priority": "p1",
       "output": "cdk",
-      "config": {
+      "awsAgentCore": {
         "region": "us-east-1",
         "foundationModel": "anthropic.claude-3-sonnet-20240229-v1:0",
         "iac": "cdk",
@@ -45,10 +46,10 @@
     },
     {
       "name": "aws-eks",
-      "platform": "aws-eks",
+      "platform": "kubernetes",
       "priority": "p2",
       "output": "helm",
-      "config": {
+      "kubernetes": {
         "namespace": "stats-agents",
         "helmChart": true,
         "resourceLimits": {
