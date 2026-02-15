@@ -1,0 +1,167 @@
+{
+  "$schema": "./enhanced-team-report.schema.json",
+  "project": "example-custom-jar",
+  "version": "1.0.0",
+  "target": "TRMS Migration (JDK 21)",
+  "phase": "CUSTOM EXTENSION ANALYSIS",
+  "status": "GO",
+  "generated_at": "2026-02-12T15:19:33-08:00",
+  "generated_by": "Saviynt Custom Extension Analysis Team",
+  
+  "summary_blocks": [
+    {
+      "type": "kv_pairs",
+      "pairs": [
+        { "key": "JAR", "value": "example-custom-jar v1.0.0" },
+        { "key": "Customer", "value": "Example Corp" },
+        { "key": "Date", "value": "2026-02-12" }
+      ]
+    },
+    {
+      "type": "kv_pairs",
+      "title": "DISPOSITION",
+      "pairs": [
+        { "key": "Status", "value": "(c) TRMS Migration" },
+        { "key": "Target JDK", "value": "21" }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "USE CASE",
+      "content": "Custom integration with external system requiring specialized data transformation logic not available in OOTB connectors"
+    },
+    {
+      "type": "kv_pairs",
+      "pairs": [
+        { "key": "In Use", "value": "YES (active in production)" },
+        { "key": "OOTB", "value": "NO - requires custom transformation logic" },
+        { "key": "Partner", "value": "NO" },
+        { "key": "Commonality", "value": "Rare (customer-specific use case)" }
+      ]
+    }
+  ],
+  
+  "teams": [
+    {
+      "id": "pm-analysis",
+      "name": "PM Analysis",
+      "status": "GO",
+      "tasks": [
+        {
+          "id": "use-case-validation",
+          "status": "GO",
+          "detail": "TRMS migration recommended"
+        }
+      ]
+    },
+    {
+      "id": "security-analysis",
+      "name": "Security Analysis",
+      "status": "WARN",
+      "tasks": [
+        {
+          "id": "dependency-scan",
+          "status": "WARN",
+          "detail": "3 findings (1 HIGH, 2 MEDIUM)"
+        }
+      ],
+      "content_blocks": [
+        {
+          "type": "list",
+          "items": [
+            { "icon": "🔴", "text": "Outdated library with known CVE (HIGH)" },
+            { "icon": "🟡", "text": "Deprecated API usage (MEDIUM)" },
+            { "icon": "🟡", "text": "Weak encryption algorithm (MEDIUM)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "performance-analysis",
+      "name": "Performance Analysis",
+      "status": "GO",
+      "tasks": [
+        {
+          "id": "resource-usage",
+          "status": "GO",
+          "detail": "No significant issues"
+        }
+      ]
+    },
+    {
+      "id": "trms-migration",
+      "name": "TRMS Migration",
+      "status": "GO",
+      "tasks": [
+        {
+          "id": "database-access",
+          "status": "GO",
+          "detail": "No database operations"
+        },
+        {
+          "id": "file-system-access",
+          "status": "GO",
+          "detail": "TRMS-allowed paths only"
+        },
+        {
+          "id": "environment-variables",
+          "status": "GO",
+          "detail": "No environment variable access"
+        },
+        {
+          "id": "ecm-invocations",
+          "status": "GO",
+          "detail": "No ECM API calls"
+        },
+        {
+          "id": "external-network",
+          "status": "GO",
+          "detail": "External API calls (TRMS-allowed)"
+        },
+        {
+          "id": "jdk-compatibility",
+          "status": "GO",
+          "detail": "Compatible with JDK 21"
+        }
+      ]
+    },
+    {
+      "id": "grails6-migration",
+      "name": "Grails 6 Migration",
+      "status": "SKIP",
+      "tasks": [
+        {
+          "id": "assessment",
+          "status": "SKIP",
+          "detail": "TRMS compatible - not required"
+        }
+      ]
+    }
+  ],
+  
+  "footer_blocks": [
+    {
+      "type": "kv_pairs",
+      "title": "ACTION ITEMS",
+      "pairs": [
+        { "icon": "🔴", "key": "1", "value": "Upgrade vulnerable dependency to latest version" },
+        { "icon": "🟡", "key": "2", "value": "Replace deprecated API with modern alternative" },
+        { "icon": "🟡", "key": "3", "value": "Implement stronger encryption algorithm" }
+      ]
+    },
+    {
+      "type": "kv_pairs",
+      "title": "AHA IDEAS REQUIRED",
+      "pairs": [
+        { "key": "Mandatory", "value": "0" },
+        { "key": "Recommended", "value": "1" }
+      ]
+    },
+    {
+      "type": "list",
+      "items": [
+        { "text": "OOTB Connector: Add support for custom transformation hooks" }
+      ]
+    }
+  ]
+}
