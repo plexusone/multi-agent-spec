@@ -1,0 +1,233 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/llm-evaluation.schema.json",
+  "title": "LLM Evaluation Extension",
+  "description": "Shared definitions for LLM-based evaluation fields, extending rule-based reports",
+
+  "$defs": {
+    "EvaluationType": {
+      "type": "string",
+      "enum": ["rule", "llm", "combined"],
+      "default": "rule",
+      "description": "Evaluation methodology: rule (deterministic), llm (AI-based), or combined (both)"
+    },
+
+    "LLMEvaluation": {
+      "type": "object",
+      "description": "LLM-based evaluation results (present when evaluationType is 'llm' or 'combined')",
+      "required": ["score", "model"],
+      "properties": {
+        "score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Numeric score from LLM evaluation (0-10 scale)"
+        },
+        "maxScore": {
+          "type": "number",
+          "default": 10,
+          "description": "Maximum possible score (default: 10)"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "LLM's confidence in the evaluation (0-1 scale)"
+        },
+        "reasoning": {
+          "type": "string",
+          "description": "LLM's explanation of the score and evaluation"
+        },
+        "strengths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Positive aspects identified by the LLM"
+        },
+        "concerns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Issues or problems identified by the LLM"
+        },
+        "suggestions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Actionable recommendations for improvement"
+        },
+        "model": {
+          "type": "string",
+          "description": "LLM model used (e.g., 'claude-sonnet-4', 'gpt-4')"
+        },
+        "provider": {
+          "type": "string",
+          "enum": ["anthropic", "openai", "bedrock", "google", "azure"],
+          "description": "LLM provider"
+        },
+        "tokensUsed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total tokens consumed for this evaluation"
+        },
+        "latencyMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "LLM API response time in milliseconds"
+        },
+        "promptVersion": {
+          "type": "string",
+          "description": "Version identifier for the evaluation prompt (for reproducibility)"
+        }
+      }
+    },
+
+    "CombinedWeights": {
+      "type": "object",
+      "description": "Weighting for combined rule + LLM evaluation",
+      "required": ["rule", "llm"],
+      "properties": {
+        "rule": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Weight for rule-based score (0-1)"
+        },
+        "llm": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Weight for LLM score (0-1)"
+        }
+      }
+    },
+
+    "EvaluationCategory": {
+      "type": "object",
+      "description": "A single evaluation category (e.g., 'problem-clarity', 'requirements-quality')",
+      "required": ["id", "name", "status"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Category identifier"
+        },
+        "name": {
+          "type": "string",
+          "description": "Human-readable category name"
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Category weight in overall score calculation"
+        },
+        "evaluationType": {
+          "$ref": "#/$defs/EvaluationType"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["GO", "WARN", "NO-GO", "SKIP"],
+          "description": "Pass/fail status for this category"
+        },
+        "detail": {
+          "type": "string",
+          "description": "Rule-based evaluation detail"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Structured data from rule-based checks",
+          "additionalProperties": true
+        },
+        "llm": {
+          "$ref": "#/$defs/LLMEvaluation"
+        },
+        "combinedScore": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 10,
+          "description": "Weighted combined score (when evaluationType is 'combined')"
+        }
+      },
+      "if": {
+        "properties": { "evaluationType": { "enum": ["llm", "combined"] } }
+      },
+      "then": {
+        "required": ["llm"]
+      }
+    },
+
+    "NarrativeReport": {
+      "type": "object",
+      "description": "Narrative report explaining issues and fixes (LLM-generated)",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "Executive summary of evaluation findings"
+        },
+        "issues": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Issue" },
+          "description": "Detailed issues requiring attention"
+        },
+        "overallRecommendation": {
+          "type": "string",
+          "description": "High-level recommendation for the document"
+        },
+        "estimatedEffort": {
+          "type": "string",
+          "enum": ["trivial", "low", "medium", "high"],
+          "description": "Estimated effort to address all issues"
+        }
+      }
+    },
+
+    "Issue": {
+      "type": "object",
+      "description": "A specific issue identified in the evaluation",
+      "required": ["id", "category", "severity", "problem"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Issue identifier"
+        },
+        "category": {
+          "type": "string",
+          "description": "Evaluation category this issue belongs to"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["critical", "major", "minor", "suggestion"],
+          "description": "Issue severity"
+        },
+        "problem": {
+          "type": "string",
+          "description": "Description of the problem"
+        },
+        "location": {
+          "type": "string",
+          "description": "Where in the document the issue occurs (e.g., 'requirements.functional[2]')"
+        },
+        "analysis": {
+          "type": "string",
+          "description": "Why this is a problem"
+        },
+        "recommendation": {
+          "type": "string",
+          "description": "How to fix the issue"
+        },
+        "example": {
+          "type": "string",
+          "description": "Example of improved text or structure"
+        },
+        "effort": {
+          "type": "string",
+          "enum": ["trivial", "low", "medium", "high"],
+          "description": "Estimated effort to fix this issue"
+        },
+        "relatedIssues": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "IDs of related issues"
+        }
+      }
+    }
+  }
+}

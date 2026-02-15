@@ -1,0 +1,233 @@
+{
+  "$schema": "../team-report.schema.json",
+  "title": "PRD Evaluation Report",
+  "project": "enterprise-ai-platform",
+  "version": "1.0.0",
+  "target": "PRD-2025-042",
+  "phase": "review",
+  "evaluationType": "combined",
+  "weights": {
+    "rule": 0.6,
+    "llm": 0.4
+  },
+
+  "summary_blocks": [
+    {
+      "type": "kv_pairs",
+      "title": "Document Info",
+      "pairs": [
+        { "key": "Document", "value": "PRD-2025-042" },
+        { "key": "Title", "value": "Enterprise AI Platform" },
+        { "key": "Author", "value": "Jane Doe" },
+        { "key": "Status", "value": "in_review" }
+      ]
+    },
+    {
+      "type": "metric",
+      "label": "Combined Score",
+      "value": "7.2",
+      "target": "8.0",
+      "status": "WARN"
+    },
+    {
+      "type": "kv_pairs",
+      "title": "Score Breakdown",
+      "pairs": [
+        { "key": "Rule-Based Score", "value": "7.8 / 10.0", "icon": "📊" },
+        { "key": "LLM Score", "value": "6.3 / 10.0", "icon": "🤖" },
+        { "key": "Combined (60/40)", "value": "7.2 / 10.0", "icon": "⚖️" }
+      ]
+    }
+  ],
+
+  "teams": [
+    {
+      "id": "problem-clarity",
+      "name": "Problem Clarity",
+      "agent_id": "prd-evaluator",
+      "model": "claude-sonnet-4",
+      "status": "WARN",
+      "tasks": [
+        { "id": "problem-statement", "status": "GO", "detail": "Problem statement present" },
+        { "id": "user-impact", "status": "WARN", "detail": "Impact not quantified" },
+        { "id": "evidence", "status": "NO-GO", "detail": "No evidence cited" },
+        { "id": "root-cause", "status": "GO", "detail": "Root causes identified" }
+      ],
+      "content_blocks": [
+        {
+          "type": "table",
+          "title": "Evaluation Details",
+          "headers": ["Aspect", "Rule Score", "LLM Score", "Combined"],
+          "rows": [
+            ["Specificity", "8.0", "7.0", "7.6"],
+            ["Measurability", "6.0", "5.0", "5.6"],
+            ["Root Cause Clarity", "9.0", "8.0", "8.6"],
+            ["User Impact", "5.0", "4.0", "4.6"]
+          ]
+        }
+      ],
+      "llm": {
+        "score": 6.0,
+        "maxScore": 10.0,
+        "confidence": 0.85,
+        "reasoning": "The problem statement clearly identifies user pain but lacks quantified impact. While root causes are mentioned, there is no supporting evidence or data to validate the claims.",
+        "strengths": [
+          "Clear articulation of user frustration",
+          "Root causes are specific and actionable"
+        ],
+        "concerns": [
+          "No baseline metrics provided",
+          "User impact is described qualitatively, not quantitatively",
+          "No user research or survey data cited"
+        ],
+        "suggestions": [
+          "Add current state metrics (e.g., 'Current time-to-deploy: 3 days')",
+          "Include user research citations or survey results",
+          "Quantify affected user count and business impact"
+        ],
+        "model": "claude-sonnet-4",
+        "provider": "anthropic",
+        "tokensUsed": 1250,
+        "latencyMs": 890
+      }
+    },
+    {
+      "id": "requirements-quality",
+      "name": "Requirements Quality",
+      "agent_id": "prd-evaluator",
+      "model": "claude-sonnet-4",
+      "status": "WARN",
+      "tasks": [
+        { "id": "functional-count", "status": "GO", "detail": "12 functional requirements" },
+        { "id": "nfr-count", "status": "GO", "detail": "8 non-functional requirements" },
+        { "id": "testability", "status": "WARN", "detail": "3 requirements use ambiguous terms" },
+        { "id": "traceability", "status": "GO", "detail": "Requirements linked to personas" }
+      ],
+      "llm": {
+        "score": 6.5,
+        "maxScore": 10.0,
+        "confidence": 0.90,
+        "reasoning": "Requirements are well-structured but several use ambiguous terms that make objective verification difficult.",
+        "strengths": [
+          "Good coverage of functional and non-functional requirements",
+          "Clear persona linkage",
+          "MoSCoW prioritization applied consistently"
+        ],
+        "concerns": [
+          "FR-003 uses 'fast response' without specific latency target",
+          "FR-007 uses 'seamless integration' - vague",
+          "NFR-002 says 'highly available' without defining SLA"
+        ],
+        "suggestions": [
+          "FR-003: Replace 'fast response' with 'P95 latency < 200ms'",
+          "FR-007: Define specific integration points and protocols",
+          "NFR-002: Specify availability target (e.g., 99.9% uptime)"
+        ],
+        "model": "claude-sonnet-4",
+        "provider": "anthropic",
+        "tokensUsed": 1480,
+        "latencyMs": 1120
+      }
+    },
+    {
+      "id": "solution-problem-fit",
+      "name": "Solution-Problem Fit",
+      "agent_id": "prd-evaluator",
+      "model": "claude-sonnet-4",
+      "status": "WARN",
+      "tasks": [
+        { "id": "problems-addressed", "status": "WARN", "detail": "3 of 5 problems addressed" },
+        { "id": "orphan-features", "status": "GO", "detail": "No orphan features" },
+        { "id": "gap-analysis", "status": "NO-GO", "detail": "2 problems without solutions" }
+      ],
+      "llm": {
+        "score": 5.5,
+        "maxScore": 10.0,
+        "confidence": 0.88,
+        "reasoning": "The solution addresses core problems but leaves significant gaps in cost control and vendor lock-in concerns.",
+        "concerns": [
+          "Problem #3 (cost visibility) has no corresponding feature",
+          "Problem #5 (vendor lock-in) not addressed in solution or non-goals"
+        ],
+        "suggestions": [
+          "Add cost monitoring feature to address Problem #3",
+          "Either add multi-cloud support or explicitly list vendor lock-in as a non-goal with rationale"
+        ],
+        "model": "claude-sonnet-4",
+        "provider": "anthropic",
+        "tokensUsed": 980,
+        "latencyMs": 750
+      }
+    }
+  ],
+
+  "narrative": {
+    "summary": "This PRD demonstrates solid structural completeness but has semantic gaps that should be addressed before approval. The main issues are: lack of quantified problem impact, ambiguous requirement language, and incomplete solution-problem mapping.",
+    "issues": [
+      {
+        "id": "ISS-001",
+        "category": "problem-clarity",
+        "severity": "major",
+        "problem": "Problem impact is not quantified",
+        "location": "executiveSummary.problemStatement",
+        "analysis": "Without quantified impact, it's difficult to prioritize this PRD against others and measure success.",
+        "recommendation": "Add specific metrics showing current state and business impact",
+        "example": "Current deployment time averages 3.2 days, affecting 500+ developers and costing approximately $50K/month in delayed releases.",
+        "effort": "low"
+      },
+      {
+        "id": "ISS-002",
+        "category": "requirements-quality",
+        "severity": "major",
+        "problem": "Ambiguous performance requirement",
+        "location": "requirements.functional[2]",
+        "analysis": "FR-003 specifies 'fast response' which cannot be objectively tested.",
+        "recommendation": "Replace with measurable latency target",
+        "example": "API responses must have P95 latency < 200ms under normal load (100 concurrent users).",
+        "effort": "trivial"
+      },
+      {
+        "id": "ISS-003",
+        "category": "solution-problem-fit",
+        "severity": "major",
+        "problem": "Cost visibility problem not addressed",
+        "location": "solution",
+        "analysis": "Problem #3 identifies cost visibility as a user pain point, but no feature addresses this.",
+        "recommendation": "Add cost monitoring feature or move to non-goals with rationale",
+        "example": "Add FR-013: Cost Dashboard - Users can view real-time and historical cost breakdowns by project, team, and resource type.",
+        "effort": "medium"
+      },
+      {
+        "id": "ISS-004",
+        "category": "problem-clarity",
+        "severity": "minor",
+        "problem": "No evidence supporting problem claims",
+        "location": "problem.evidence",
+        "analysis": "Claims about user frustration are not backed by user research or data.",
+        "recommendation": "Add user research citations or survey data",
+        "example": "Based on Q4 user survey (n=500): 73% of developers report frustration with current deployment process.",
+        "effort": "low"
+      }
+    ],
+    "overallRecommendation": "Address the 3 major issues before submitting for approval. The minor issue can be addressed in a follow-up revision.",
+    "estimatedEffort": "low"
+  },
+
+  "footer_blocks": [
+    {
+      "type": "list",
+      "title": "Next Steps",
+      "items": [
+        { "text": "Address ISS-001: Add quantified problem impact", "status": "NO-GO" },
+        { "text": "Address ISS-002: Fix ambiguous requirements (FR-003, FR-007, NFR-002)", "status": "NO-GO" },
+        { "text": "Address ISS-003: Add cost visibility feature or non-goal", "status": "NO-GO" },
+        { "text": "Address ISS-004: Add user research evidence", "status": "WARN" }
+      ]
+    }
+  ],
+
+  "status": "WARN",
+  "conclusion": "PRD requires revisions before approval. Estimated effort: 2-4 hours to address major issues.",
+  "generated_at": "2026-02-14T15:30:00Z",
+  "generated_by": "splan-evaluator/0.9.0"
+}
