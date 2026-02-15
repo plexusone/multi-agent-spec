@@ -72,6 +72,10 @@ type AgentResult struct {
 	// Tasks are the individual task results (one per line in reports)
 	Tasks []TaskResult `json:"tasks"`
 
+	// ContentBlocks holds rich content produced by this agent.
+	// Allows agents to include findings, action items, etc.
+	ContentBlocks []ContentBlock `json:"content_blocks,omitempty"`
+
 	// Status is the overall status for this agent (computed from tasks)
 	Status Status `json:"status"`
 
@@ -105,11 +109,19 @@ type TeamSection struct {
 	// DependsOn lists the IDs of upstream teams in the DAG
 	DependsOn []string `json:"depends_on,omitempty"`
 
-	// Tasks are the task results for this team (one per line in reports)
-	Tasks []TaskResult `json:"tasks"`
+	// Tasks are the task results for this team (one per line in reports).
+	// Optional: teams can use ContentBlocks instead of or in addition to Tasks.
+	Tasks []TaskResult `json:"tasks,omitempty"`
 
 	// Status is the overall status (computed from tasks)
 	Status Status `json:"status"`
+
+	// ContentBlocks holds rich content for this team section.
+	// Supports lists, kv_pairs, tables, text, metrics.
+	ContentBlocks []ContentBlock `json:"content_blocks,omitempty"`
+
+	// Narrative holds prose content for narrative reports.
+	Narrative *NarrativeSection `json:"narrative,omitempty"`
 }
 
 // TeamReport is the complete JSON-serializable report.
@@ -117,6 +129,10 @@ type TeamSection struct {
 type TeamReport struct {
 	// Schema is the JSON schema URL for validation
 	Schema string `json:"$schema,omitempty"`
+
+	// Title is the report title (e.g., "CUSTOM EXTENSION ANALYSIS REPORT").
+	// If empty, defaults to "TEAM STATUS REPORT" in rendering.
+	Title string `json:"title,omitempty"`
 
 	// Project is the repository identifier
 	Project string `json:"project"`
@@ -130,8 +146,22 @@ type TeamReport struct {
 	// Phase is the workflow phase (e.g., "PHASE 1: REVIEW")
 	Phase string `json:"phase"`
 
+	// SummaryBlocks appear after the header, before the phase.
+	// For metadata, disposition, use-case descriptions.
+	SummaryBlocks []ContentBlock `json:"summary_blocks,omitempty"`
+
 	// Teams are the validation teams/agents
 	Teams []TeamSection `json:"teams"`
+
+	// FooterBlocks appear after all teams, before the final message.
+	// For action items, recommendations, required follow-ups.
+	FooterBlocks []ContentBlock `json:"footer_blocks,omitempty"`
+
+	// Summary is the executive summary for narrative reports.
+	Summary string `json:"summary,omitempty"`
+
+	// Conclusion is the closing section for narrative reports.
+	Conclusion string `json:"conclusion,omitempty"`
 
 	// Status is the overall status (computed from teams)
 	Status Status `json:"status"`
@@ -143,6 +173,14 @@ type TeamReport struct {
 	GeneratedBy string `json:"generated_by,omitempty"`
 }
 
+// EffectiveTitle returns Title if set, otherwise the default.
+func (r *TeamReport) EffectiveTitle() string {
+	if r.Title != "" {
+		return r.Title
+	}
+	return "TEAM STATUS REPORT"
+}
+
 // ComputeStatus computes the overall status from tasks.
 func (a *AgentResult) ComputeStatus() Status {
 	return computeStatusFromTasks(a.Tasks)
@@ -151,12 +189,13 @@ func (a *AgentResult) ComputeStatus() Status {
 // ToTeamSection converts an AgentResult to a TeamSection for the report.
 func (a *AgentResult) ToTeamSection() TeamSection {
 	return TeamSection{
-		ID:      a.StepID,
-		Name:    a.AgentID,
-		AgentID: a.AgentID,
-		Model:   a.AgentModel,
-		Tasks:   a.Tasks,
-		Status:  a.ComputeStatus(),
+		ID:            a.StepID,
+		Name:          a.AgentID,
+		AgentID:       a.AgentID,
+		Model:         a.AgentModel,
+		Tasks:         a.Tasks,
+		ContentBlocks: a.ContentBlocks,
+		Status:        a.ComputeStatus(),
 	}
 }
 

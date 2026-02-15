@@ -96,3 +96,12 @@ func (Status) JSONSchema() *jsonschema.Schema {
 		Description: "Validation status",
 	}
 }
+
+// JSONSchema implements jsonschema.Schema for ContentBlockType type.
+func (ContentBlockType) JSONSchema() *jsonschema.Schema {
+	return &jsonschema.Schema{
+		Type:        "string",
+		Enum:        []interface{}{"kv_pairs", "list", "table", "text", "metric"},
+		Description: "Content block type discriminator",
+	}
+}

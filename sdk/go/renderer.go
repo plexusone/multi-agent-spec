@@ -41,14 +41,19 @@ func (r *Renderer) renderBox(report *TeamReport) error {
 // templateFuncs returns the template function map.
 func templateFuncs() template.FuncMap {
 	return template.FuncMap{
-		"header":       header,
-		"separator":    separator,
-		"footer":       footer,
-		"teamHeader":   teamHeader,
-		"taskLine":     taskLine,
-		"centerLine":   centerLine,
-		"paddedLine":   paddedLine,
-		"finalMessage": finalMessage,
+		"header":           header,
+		"separator":        separator,
+		"footer":           footer,
+		"teamHeader":       teamHeader,
+		"taskLine":         taskLine,
+		"centerLine":       centerLine,
+		"paddedLine":       paddedLine,
+		"finalMessage":     finalMessage,
+		"renderBlock":      renderBlock,
+		"renderBlocks":     renderBlocks,
+		"hasContentBlocks": hasContentBlocks,
+		"hasSummaryBlocks": hasSummaryBlocks,
+		"hasFooterBlocks":  hasFooterBlocks,
 	}
 }
 
@@ -130,15 +135,185 @@ func visualLength(s string) int {
 	return length
 }
 
+// hasContentBlocks returns true if the team has content blocks.
+func hasContentBlocks(team TeamSection) bool {
+	return len(team.ContentBlocks) > 0
+}
+
+// hasSummaryBlocks returns true if the report has summary blocks.
+func hasSummaryBlocks(report *TeamReport) bool {
+	return len(report.SummaryBlocks) > 0
+}
+
+// hasFooterBlocks returns true if the report has footer blocks.
+func hasFooterBlocks(report *TeamReport) bool {
+	return len(report.FooterBlocks) > 0
+}
+
+// renderBlocks renders multiple content blocks, returning joined lines.
+func renderBlocks(blocks []ContentBlock) string {
+	var lines []string
+	for _, block := range blocks {
+		lines = append(lines, renderBlock(block))
+	}
+	return strings.Join(lines, "\n")
+}
+
+// renderBlock renders a single content block to box-formatted lines.
+func renderBlock(block ContentBlock) string {
+	var lines []string
+
+	// Add title if present
+	if block.Title != "" {
+		lines = append(lines, paddedLine(block.Title))
+	}
+
+	switch block.Type {
+	case ContentBlockKVPairs:
+		lines = append(lines, renderKVPairs(block.Pairs)...)
+	case ContentBlockList:
+		lines = append(lines, renderList(block.Items)...)
+	case ContentBlockText:
+		lines = append(lines, wrapText(block.Content, boxWidth-2)...)
+	case ContentBlockTable:
+		lines = append(lines, renderTable(block.Headers, block.Rows)...)
+	case ContentBlockMetric:
+		lines = append(lines, renderMetric(block.Label, block.Value, block.Status, block.Target))
+	}
+
+	return strings.Join(lines, "\n")
+}
+
+// renderKVPairs renders key-value pairs.
+func renderKVPairs(pairs []KVPair) []string {
+	var lines []string
+	for _, pair := range pairs {
+		var text string
+		if pair.Icon != "" {
+			text = fmt.Sprintf("%s %s: %s", pair.Icon, pair.Key, pair.Value)
+		} else {
+			text = fmt.Sprintf("%s: %s", pair.Key, pair.Value)
+		}
+		lines = append(lines, paddedLine(text))
+	}
+	return lines
+}
+
+// renderList renders list items.
+func renderList(items []ListItem) []string {
+	var lines []string
+	for _, item := range items {
+		icon := item.EffectiveIcon()
+		var text string
+		if icon != "" {
+			text = fmt.Sprintf("%s %s", icon, item.Text)
+		} else {
+			text = fmt.Sprintf("  %s", item.Text)
+		}
+		lines = append(lines, paddedLine(text))
+	}
+	return lines
+}
+
+// wrapText wraps text to fit within maxWidth, returning padded lines.
+func wrapText(content string, maxWidth int) []string {
+	var lines []string
+	words := strings.Fields(content)
+	if len(words) == 0 {
+		return lines
+	}
+
+	currentLine := ""
+	for _, word := range words {
+		if currentLine == "" {
+			currentLine = word
+		} else if len(currentLine)+1+len(word) <= maxWidth {
+			currentLine += " " + word
+		} else {
+			lines = append(lines, paddedLine(currentLine))
+			currentLine = word
+		}
+	}
+	if currentLine != "" {
+		lines = append(lines, paddedLine(currentLine))
+	}
+	return lines
+}
+
+// renderTable renders a simple table.
+func renderTable(headers []string, rows [][]string) []string {
+	var lines []string
+
+	// Calculate column widths
+	colWidths := make([]int, len(headers))
+	for i, h := range headers {
+		colWidths[i] = len(h)
+	}
+	for _, row := range rows {
+		for i, cell := range row {
+			if i < len(colWidths) && len(cell) > colWidths[i] {
+				colWidths[i] = len(cell)
+			}
+		}
+	}
+
+	// Render header row
+	headerParts := make([]string, len(headers))
+	for i, h := range headers {
+		headerParts[i] = fmt.Sprintf("%-*s", colWidths[i], h)
+	}
+	lines = append(lines, paddedLine(strings.Join(headerParts, " │ ")))
+
+	// Render separator
+	sepParts := make([]string, len(headers))
+	for i := range headers {
+		sepParts[i] = strings.Repeat("─", colWidths[i])
+	}
+	lines = append(lines, paddedLine(strings.Join(sepParts, "─┼─")))
+
+	// Render data rows
+	for _, row := range rows {
+		rowParts := make([]string, len(headers))
+		for i := range headers {
+			cell := ""
+			if i < len(row) {
+				cell = row[i]
+			}
+			rowParts[i] = fmt.Sprintf("%-*s", colWidths[i], cell)
+		}
+		lines = append(lines, paddedLine(strings.Join(rowParts, " │ ")))
+	}
+
+	return lines
+}
+
+// renderMetric renders a single metric with status icon and optional target.
+func renderMetric(label, value string, status Status, target string) string {
+	icon := status.Icon()
+	var text string
+	if target != "" {
+		text = fmt.Sprintf("%s %s: %s (target: %s)", icon, label, value, target)
+	} else {
+		text = fmt.Sprintf("%s %s: %s", icon, label, value)
+	}
+	return paddedLine(text)
+}
+
 // BoxTemplate is the text/template for the box format report.
 // This is the reference implementation for rendering TeamReport to text.
 // Each task is rendered on its own line with status indicator.
+// Content blocks are rendered after tasks within each team section.
 const BoxTemplate = `{{ header }}
-{{ centerLine "TEAM STATUS REPORT" }}
+{{ centerLine .EffectiveTitle }}
 {{ separator }}
+{{- if hasSummaryBlocks . }}
+{{ renderBlocks .SummaryBlocks }}
+{{ separator }}
+{{- else }}
 {{ paddedLine (printf "Project: %s" .Project) }}
 {{ paddedLine (printf "Target:  %s" .Target) }}
 {{ separator }}
+{{- end }}
 {{ paddedLine .Phase }}
 {{- range .Teams }}
 {{ separator }}
@@ -146,6 +321,13 @@ const BoxTemplate = `{{ header }}
 {{- range .Tasks }}
 {{ taskLine . }}
 {{- end }}
+{{- if hasContentBlocks . }}
+{{ renderBlocks .ContentBlocks }}
+{{- end }}
+{{- end }}
+{{- if hasFooterBlocks . }}
+{{ separator }}
+{{ renderBlocks .FooterBlocks }}
 {{- end }}
 {{ separator }}
 {{ finalMessage . }}
