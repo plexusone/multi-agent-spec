@@ -133,6 +133,17 @@
       ],
       "description": "Validation status"
     },
+    "Severity": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info"
+      ],
+      "description": "Finding severity/impact level. Orthogonal to status (status = pass/fail, severity = impact)."
+    },
     "TaskResult": {
       "properties": {
         "id": {
@@ -140,6 +151,9 @@
         },
         "status": {
           "$ref": "#/$defs/Status"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity"
         },
         "detail": {
           "type": "string"
@@ -177,6 +191,13 @@
         },
         "phase": {
           "type": "string"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Key-value tags for filtering and aggregation across reports."
         },
         "summary_blocks": {
           "items": {
@@ -252,6 +273,10 @@
         },
         "status": {
           "$ref": "#/$defs/Status"
+        },
+        "verdict": {
+          "type": "string",
+          "description": "Domain-specific verdict label. Richer than status. Status is machine-readable GO/NO-GO; verdict is the human-readable domain assessment."
         },
         "content_blocks": {
           "items": {

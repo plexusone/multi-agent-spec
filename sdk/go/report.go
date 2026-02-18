@@ -40,6 +40,10 @@ type TaskResult struct {
 	// Status is GO, WARN, NO-GO, or SKIP
 	Status Status `json:"status"`
 
+	// Severity is the impact level (critical, high, medium, low, info).
+	// Orthogonal to Status: Status answers "did it pass?", Severity answers "how bad is it?"
+	Severity string `json:"severity,omitempty"`
+
 	// Detail is optional additional information about the result
 	Detail string `json:"detail,omitempty"`
 
@@ -116,6 +120,11 @@ type TeamSection struct {
 	// Status is the overall status (computed from tasks)
 	Status Status `json:"status"`
 
+	// Verdict is a domain-specific verdict label, richer than the 4-value Status.
+	// Status is machine-readable GO/NO-GO; Verdict is the human-readable domain assessment.
+	// Examples: "BLOCKED_PENDING_ENHANCEMENT", "COMPLIANT", "NEEDS_WORK"
+	Verdict string `json:"verdict,omitempty"`
+
 	// ContentBlocks holds rich content for this team section.
 	// Supports lists, kv_pairs, tables, text, metrics.
 	ContentBlocks []ContentBlock `json:"content_blocks,omitempty"`
@@ -145,6 +154,10 @@ type TeamReport struct {
 
 	// Phase is the workflow phase (e.g., "PHASE 1: REVIEW")
 	Phase string `json:"phase"`
+
+	// Tags are key-value pairs for filtering and aggregation across reports.
+	// Examples: customer, environment, use_case, target_system
+	Tags map[string]string `json:"tags,omitempty"`
 
 	// SummaryBlocks appear after the header, before the phase.
 	// For metadata, disposition, use-case descriptions.
