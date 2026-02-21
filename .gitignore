@@ -16,3 +16,6 @@ sdk/typescript/dist/
 *.dll
 *.so
 *.dylib
+
+# CLI binary
+cmd/mas/mas
