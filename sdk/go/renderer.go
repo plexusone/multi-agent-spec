@@ -12,7 +12,7 @@ const (
 	boxWidth = 78
 )
 
-// Renderer renders TeamReport to various formats.
+// Renderer renders TeamReport to various formats using text/template.
 type Renderer struct {
 	w io.Writer
 }
@@ -38,6 +38,25 @@ func (r *Renderer) renderBox(report *TeamReport) error {
 	return tmpl.Execute(r.w, report)
 }
 
+// QuickRenderer renders TeamReport using quicktemplate (compile-time type-safe).
+// This is an alternative to Renderer that uses generated code instead of reflection.
+type QuickRenderer struct {
+	w io.Writer
+}
+
+// NewQuickRenderer creates a new QuickRenderer writing to w.
+func NewQuickRenderer(w io.Writer) *QuickRenderer {
+	return &QuickRenderer{w: w}
+}
+
+// Render renders the report using quicktemplate.
+// It automatically sorts teams by DAG order before rendering.
+func (r *QuickRenderer) Render(report *TeamReport) error {
+	report.SortByDAG()
+	WriteBoxReport(r.w, report)
+	return nil
+}
+
 // templateFuncs returns the template function map.
 func templateFuncs() template.FuncMap {
 	return template.FuncMap{
@@ -54,6 +73,8 @@ func templateFuncs() template.FuncMap {
 		"hasContentBlocks": hasContentBlocks,
 		"hasSummaryBlocks": hasSummaryBlocks,
 		"hasFooterBlocks":  hasFooterBlocks,
+		"hasTags":          hasTags,
+		"renderTags":       renderTags,
 	}
 }
 
@@ -88,13 +109,19 @@ func paddedLine(text string) string {
 	return "║ " + text + strings.Repeat(" ", padding) + "║"
 }
 
-// teamHeader formats a team header line.
+// teamHeader formats a team header line with status icon and optional verdict.
 func teamHeader(team TeamSection) string {
-	text := fmt.Sprintf("%s (%s)", team.ID, team.Name)
+	icon := team.Status.Icon()
+	var text string
+	if team.Verdict != "" {
+		text = fmt.Sprintf("%s %s — %s — %s", icon, team.Name, team.Status, team.Verdict)
+	} else {
+		text = fmt.Sprintf("%s %s — %s", icon, team.Name, team.Status)
+	}
 	return paddedLine(text)
 }
 
-// taskLine formats a single task result line.
+// taskLine formats a single task result line with optional severity.
 func taskLine(task TaskResult) string {
 	id := task.ID
 	if len(id) > 24 {
@@ -104,13 +131,18 @@ func taskLine(task TaskResult) string {
 	icon := task.Status.Icon()
 	statusText := string(task.Status)
 
+	// Add severity in brackets if present
+	if task.Severity != "" {
+		statusText = fmt.Sprintf("%s [%s]", statusText, task.Severity)
+	}
+
 	detail := task.Detail
-	maxDetail := boxWidth - 40
+	maxDetail := boxWidth - 45 // Reduced to accommodate severity
 	if len(detail) > maxDetail {
 		detail = detail[:maxDetail-3] + "..."
 	}
 
-	line := fmt.Sprintf("  %-24s %s %-5s %s", id, icon, statusText, detail)
+	line := fmt.Sprintf("  %-24s %s %-15s %s", id, icon, statusText, detail)
 	return paddedLine(line)
 }
 
@@ -148,6 +180,27 @@ func hasSummaryBlocks(report *TeamReport) bool {
 // hasFooterBlocks returns true if the report has footer blocks.
 func hasFooterBlocks(report *TeamReport) bool {
 	return len(report.FooterBlocks) > 0
+}
+
+// hasTags returns true if the report has tags.
+func hasTags(report *TeamReport) bool {
+	return len(report.Tags) > 0
+}
+
+// renderTags renders tags as key-value lines, sorted by key.
+func renderTags(tags map[string]string) string {
+	// Sort keys for deterministic output
+	keys := make([]string, 0, len(tags))
+	for k := range tags {
+		keys = append(keys, k)
+	}
+	sortStrings(keys)
+
+	var lines []string
+	for _, k := range keys {
+		lines = append(lines, paddedLine(fmt.Sprintf("  %s: %s", k, tags[k])))
+	}
+	return strings.Join(lines, "\n")
 }
 
 // renderBlocks renders multiple content blocks, returning joined lines.
@@ -312,6 +365,10 @@ const BoxTemplate = `{{ header }}
 {{- else }}
 {{ paddedLine (printf "Project: %s" .Project) }}
 {{ paddedLine (printf "Target:  %s" .Target) }}
+{{- if hasTags . }}
+{{ paddedLine "Tags:" }}
+{{ renderTags .Tags }}
+{{- end }}
 {{ separator }}
 {{- end }}
 {{ paddedLine .Phase }}

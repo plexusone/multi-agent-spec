@@ -3,6 +3,7 @@ package multiagentspec
 import (
 	"fmt"
 	"io"
+	"sort"
 	"strings"
 	"text/template"
 )
@@ -19,7 +20,7 @@ type NarrativeSection struct {
 	Recommendation string `json:"recommendation,omitempty"`
 }
 
-// NarrativeRenderer renders TeamReport to Pandoc-friendly Markdown.
+// NarrativeRenderer renders TeamReport to Pandoc-friendly Markdown using text/template.
 // Output is designed for conversion to PDF via:
 //
 //	pandoc report.md -o report.pdf --pdf-engine=xelatex
@@ -44,6 +45,25 @@ func (r *NarrativeRenderer) Render(report *TeamReport) error {
 	return tmpl.Execute(r.w, report)
 }
 
+// QuickNarrativeRenderer renders TeamReport using quicktemplate (compile-time type-safe).
+// This is an alternative to NarrativeRenderer that uses generated code instead of reflection.
+type QuickNarrativeRenderer struct {
+	w io.Writer
+}
+
+// NewQuickNarrativeRenderer creates a new QuickNarrativeRenderer writing to w.
+func NewQuickNarrativeRenderer(w io.Writer) *QuickNarrativeRenderer {
+	return &QuickNarrativeRenderer{w: w}
+}
+
+// Render renders the report using quicktemplate.
+// It automatically sorts teams by DAG order before rendering.
+func (r *QuickNarrativeRenderer) Render(report *TeamReport) error {
+	report.SortByDAG()
+	WriteNarrativeReport(r.w, report)
+	return nil
+}
+
 // narrativeFuncs returns the template function map for narrative rendering.
 func narrativeFuncs() template.FuncMap {
 	return template.FuncMap{
@@ -55,7 +75,36 @@ func narrativeFuncs() template.FuncMap {
 		"renderBlockMD":    renderBlockMD,
 		"renderBlocksMD":   renderBlocksMD,
 		"indent":           indent,
+		"hasVerdict":       hasVerdict,
+		"hasTags":          hasTagsNarrative,
+		"renderTagsMD":     renderTagsMD,
 	}
+}
+
+// hasVerdict returns true if the team has a verdict.
+func hasVerdict(team TeamSection) bool {
+	return team.Verdict != ""
+}
+
+// hasTagsNarrative returns true if the report has tags.
+func hasTagsNarrative(report *TeamReport) bool {
+	return len(report.Tags) > 0
+}
+
+// renderTagsMD renders tags as Markdown list items, sorted by key.
+func renderTagsMD(tags map[string]string) string {
+	// Sort keys for deterministic output
+	keys := make([]string, 0, len(tags))
+	for k := range tags {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	var lines []string
+	for _, k := range keys {
+		lines = append(lines, fmt.Sprintf("- **%s**: %s", k, tags[k]))
+	}
+	return strings.Join(lines, "\n")
 }
 
 // statusText returns a text representation of status (no emojis).
@@ -189,6 +238,12 @@ date: "{{ .GeneratedAt.Format "2006-01-02" }}"
 **Version**: {{ .Version }}
 **Phase**: {{ .Phase }}
 **Overall Status**: {{ statusText .Status }}
+{{- if hasTags . }}
+
+### Tags
+
+{{ renderTagsMD .Tags }}
+{{- end }}
 {{- if hasSummary . }}
 
 ## Executive Summary
@@ -208,6 +263,9 @@ date: "{{ .GeneratedAt.Format "2006-01-02" }}"
 ### {{ .Name }}
 
 **Status**: {{ statusText .Status }}
+{{- if hasVerdict . }}
+**Verdict**: {{ .Verdict }}
+{{- end }}
 {{- if hasNarrative . }}
 {{- if .Narrative.Problem }}
 
@@ -232,10 +290,10 @@ date: "{{ .GeneratedAt.Format "2006-01-02" }}"
 
 #### Tasks
 
-| Task | Status | Detail |
-| --- | --- | --- |
+| Task | Status | Severity | Detail |
+| --- | --- | --- | --- |
 {{- range .Tasks }}
-| {{ .ID }} | {{ statusText .Status }} | {{ .Detail }} |
+| {{ .ID }} | {{ statusText .Status }} | {{ .Severity }} | {{ .Detail }} |
 {{- end }}
 {{- end }}
 {{- if hasContentBlocks . }}

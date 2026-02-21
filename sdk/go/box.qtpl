@@ -1,0 +1,281 @@
+{% package multiagentspec %}
+
+{% import "fmt" %}
+{% import "strings" %}
+
+{% code
+const qtplBoxWidth = 78
+%}
+
+{% func BoxReport(report *TeamReport) %}
+{%= boxHeader() %}
+{%= boxCenterLine(report.EffectiveTitle()) %}
+{%= boxSeparator() %}
+{% if len(report.SummaryBlocks) > 0 %}
+{%= boxRenderBlocks(report.SummaryBlocks) %}
+{%= boxSeparator() %}
+{% else %}
+{%= boxPaddedLine(fmt.Sprintf("Project: %s", report.Project)) %}
+{%= boxPaddedLine(fmt.Sprintf("Target:  %s", report.Target)) %}
+{% if len(report.Tags) > 0 %}
+{%= boxPaddedLine("Tags:") %}
+{%= boxRenderTags(report.Tags) %}
+{% endif %}
+{%= boxSeparator() %}
+{% endif %}
+{%= boxPaddedLine(report.Phase) %}
+{% for _, team := range report.Teams %}
+{%= boxSeparator() %}
+{%= boxTeamHeader(team) %}
+{% for _, task := range team.Tasks %}
+{%= boxTaskLine(task) %}
+{% endfor %}
+{% if len(team.ContentBlocks) > 0 %}
+{%= boxRenderBlocks(team.ContentBlocks) %}
+{% endif %}
+{% endfor %}
+{% if len(report.FooterBlocks) > 0 %}
+{%= boxSeparator() %}
+{%= boxRenderBlocks(report.FooterBlocks) %}
+{% endif %}
+{%= boxSeparator() %}
+{%= boxCenterLine(report.FinalMessage()) %}
+{%= boxFooter() %}
+{% endfunc %}
+
+{% func boxHeader() %}
+╔{%s strings.Repeat("═", qtplBoxWidth) %}╗
+{% endfunc %}
+
+{% func boxSeparator() %}
+╠{%s strings.Repeat("═", qtplBoxWidth) %}╣
+{% endfunc %}
+
+{% func boxFooter() %}
+╚{%s strings.Repeat("═", qtplBoxWidth) %}╝
+{% endfunc %}
+
+{% func boxCenterLine(text string) %}
+{% code
+    visualLen := boxVisualLength(text)
+    padding := qtplBoxWidth - visualLen
+    if padding < 0 {
+        padding = 0
+    }
+    left := padding / 2
+    right := padding - left
+%}
+║{%s strings.Repeat(" ", left) %}{%s text %}{%s strings.Repeat(" ", right) %}║
+{% endfunc %}
+
+{% func boxPaddedLine(text string) %}
+{% code
+    visualLen := boxVisualLength(text)
+    padding := qtplBoxWidth - visualLen - 1
+    if padding < 0 {
+        padding = 0
+    }
+%}
+║ {%s text %}{%s strings.Repeat(" ", padding) %}║
+{% endfunc %}
+
+{% func boxTeamHeader(team TeamSection) %}
+{% code
+    text := boxFormatTeamHeader(team)
+%}
+{%= boxPaddedLine(text) %}
+{% endfunc %}
+
+{% func boxTaskLine(task TaskResult) %}
+{% code
+    line := boxFormatTaskLine(task)
+%}
+{%= boxPaddedLine(line) %}
+{% endfunc %}
+
+{% func boxRenderTags(tags map[string]string) %}
+{% code
+    lines := boxFormatTags(tags)
+%}
+{% for _, line := range lines %}
+{%= boxPaddedLine(line) %}
+{% endfor %}
+{% endfunc %}
+
+{% func boxRenderBlocks(blocks []ContentBlock) %}
+{% for _, block := range blocks %}
+{%= boxRenderBlock(block) %}
+{% endfor %}
+{% endfunc %}
+
+{% func boxRenderBlock(block ContentBlock) %}
+{% if block.Title != "" %}
+{%= boxPaddedLine(block.Title) %}
+{% endif %}
+{% code
+    lines := boxFormatBlock(block)
+%}
+{% for _, line := range lines %}
+{%= boxPaddedLine(line) %}
+{% endfor %}
+{% endfunc %}
+
+{% code
+func boxVisualLength(s string) int {
+    length := 0
+    for _, r := range s {
+        if r >= 0x1F300 && r <= 0x1FAFF {
+            length += 2
+        } else if r >= 0x2600 && r <= 0x27BF {
+            length += 2
+        } else {
+            length++
+        }
+    }
+    return length
+}
+
+func boxFormatTeamHeader(team TeamSection) string {
+    icon := team.Status.Icon()
+    if team.Verdict != "" {
+        return fmt.Sprintf("%s %s — %s — %s", icon, team.Name, team.Status, team.Verdict)
+    }
+    return fmt.Sprintf("%s %s — %s", icon, team.Name, team.Status)
+}
+
+func boxFormatTaskLine(task TaskResult) string {
+    id := task.ID
+    if len(id) > 24 {
+        id = id[:21] + "..."
+    }
+    icon := task.Status.Icon()
+    statusText := string(task.Status)
+    if task.Severity != "" {
+        statusText = fmt.Sprintf("%s [%s]", statusText, task.Severity)
+    }
+    detail := task.Detail
+    maxDetail := qtplBoxWidth - 45
+    if len(detail) > maxDetail {
+        detail = detail[:maxDetail-3] + "..."
+    }
+    return fmt.Sprintf("  %-24s %s %-15s %s", id, icon, statusText, detail)
+}
+
+func boxFormatTags(tags map[string]string) []string {
+    keys := make([]string, 0, len(tags))
+    for k := range tags {
+        keys = append(keys, k)
+    }
+    // Sort keys
+    for i := 0; i < len(keys)-1; i++ {
+        for j := i + 1; j < len(keys); j++ {
+            if keys[j] < keys[i] {
+                keys[i], keys[j] = keys[j], keys[i]
+            }
+        }
+    }
+    lines := make([]string, len(keys))
+    for i, k := range keys {
+        lines[i] = fmt.Sprintf("  %s: %s", k, tags[k])
+    }
+    return lines
+}
+
+func boxFormatBlock(block ContentBlock) []string {
+    var lines []string
+    switch block.Type {
+    case ContentBlockKVPairs:
+        for _, pair := range block.Pairs {
+            if pair.Icon != "" {
+                lines = append(lines, fmt.Sprintf("%s %s: %s", pair.Icon, pair.Key, pair.Value))
+            } else {
+                lines = append(lines, fmt.Sprintf("%s: %s", pair.Key, pair.Value))
+            }
+        }
+    case ContentBlockList:
+        for _, item := range block.Items {
+            icon := item.EffectiveIcon()
+            if icon != "" {
+                lines = append(lines, fmt.Sprintf("%s %s", icon, item.Text))
+            } else {
+                lines = append(lines, fmt.Sprintf("  %s", item.Text))
+            }
+        }
+    case ContentBlockText:
+        lines = boxWrapText(block.Content, qtplBoxWidth-2)
+    case ContentBlockTable:
+        lines = boxFormatTable(block.Headers, block.Rows)
+    case ContentBlockMetric:
+        icon := block.Status.Icon()
+        if block.Target != "" {
+            lines = append(lines, fmt.Sprintf("%s %s: %s (target: %s)", icon, block.Label, block.Value, block.Target))
+        } else {
+            lines = append(lines, fmt.Sprintf("%s %s: %s", icon, block.Label, block.Value))
+        }
+    }
+    return lines
+}
+
+func boxWrapText(content string, maxWidth int) []string {
+    var lines []string
+    words := strings.Fields(content)
+    if len(words) == 0 {
+        return lines
+    }
+    currentLine := ""
+    for _, word := range words {
+        if currentLine == "" {
+            currentLine = word
+        } else if len(currentLine)+1+len(word) <= maxWidth {
+            currentLine += " " + word
+        } else {
+            lines = append(lines, currentLine)
+            currentLine = word
+        }
+    }
+    if currentLine != "" {
+        lines = append(lines, currentLine)
+    }
+    return lines
+}
+
+func boxFormatTable(headers []string, rows [][]string) []string {
+    var lines []string
+    colWidths := make([]int, len(headers))
+    for i, h := range headers {
+        colWidths[i] = len(h)
+    }
+    for _, row := range rows {
+        for i, cell := range row {
+            if i < len(colWidths) && len(cell) > colWidths[i] {
+                colWidths[i] = len(cell)
+            }
+        }
+    }
+    // Header
+    headerParts := make([]string, len(headers))
+    for i, h := range headers {
+        headerParts[i] = fmt.Sprintf("%-*s", colWidths[i], h)
+    }
+    lines = append(lines, strings.Join(headerParts, " │ "))
+    // Separator
+    sepParts := make([]string, len(headers))
+    for i := range headers {
+        sepParts[i] = strings.Repeat("─", colWidths[i])
+    }
+    lines = append(lines, strings.Join(sepParts, "─┼─"))
+    // Rows
+    for _, row := range rows {
+        rowParts := make([]string, len(headers))
+        for i := range headers {
+            cell := ""
+            if i < len(row) {
+                cell = row[i]
+            }
+            rowParts[i] = fmt.Sprintf("%-*s", colWidths[i], cell)
+        }
+        lines = append(lines, strings.Join(rowParts, " │ "))
+    }
+    return lines
+}
+%}

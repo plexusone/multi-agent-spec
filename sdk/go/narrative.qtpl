@@ -1,0 +1,169 @@
+{% package multiagentspec %}
+
+{% import "sort" %}
+{% import "strings" %}
+
+{% func NarrativeReport(report *TeamReport) %}
+---
+title: "{%s report.EffectiveTitle() %}"
+date: "{%s report.GeneratedAt.Format("2006-01-02") %}"
+---
+
+# {%s report.EffectiveTitle() %}
+
+**Project**: {%s report.Project %}
+**Version**: {%s report.Version %}
+**Phase**: {%s report.Phase %}
+**Overall Status**: {%s narrativeStatusText(report.Status) %}
+{% if len(report.Tags) > 0 %}
+
+### Tags
+
+{%= narrativeRenderTags(report.Tags) %}
+{% endif %}
+{% if report.Summary != "" %}
+
+## Executive Summary
+
+{%s report.Summary %}
+{% endif %}
+{% if len(report.SummaryBlocks) > 0 %}
+
+## Overview
+
+{%= narrativeRenderBlocks(report.SummaryBlocks) %}
+{% endif %}
+
+## Team Results
+{% for _, team := range report.Teams %}
+
+### {%s team.Name %}
+
+**Status**: {%s narrativeStatusText(team.Status) %}
+{% if team.Verdict != "" %}
+**Verdict**: {%s team.Verdict %}
+{% endif %}
+{% if team.Narrative != nil && (team.Narrative.Problem != "" || team.Narrative.Analysis != "" || team.Narrative.Recommendation != "") %}
+{% if team.Narrative.Problem != "" %}
+
+#### Problem
+
+{%s team.Narrative.Problem %}
+{% endif %}
+{% if team.Narrative.Analysis != "" %}
+
+#### Analysis
+
+{%s team.Narrative.Analysis %}
+{% endif %}
+{% if team.Narrative.Recommendation != "" %}
+
+#### Recommendation
+
+{%s team.Narrative.Recommendation %}
+{% endif %}
+{% endif %}
+{% if len(team.Tasks) > 0 %}
+
+#### Tasks
+
+| Task | Status | Severity | Detail |
+| --- | --- | --- | --- |
+{% for _, task := range team.Tasks %}
+| {%s task.ID %} | {%s narrativeStatusText(task.Status) %} | {%s task.Severity %} | {%s task.Detail %} |
+{% endfor %}
+{% endif %}
+{% if len(team.ContentBlocks) > 0 %}
+
+#### Details
+
+{%= narrativeRenderBlocks(team.ContentBlocks) %}
+{% endif %}
+{% endfor %}
+{% if len(report.FooterBlocks) > 0 %}
+
+## Action Items
+
+{%= narrativeRenderBlocks(report.FooterBlocks) %}
+{% endif %}
+{% if report.Conclusion != "" %}
+
+## Conclusion
+
+{%s report.Conclusion %}
+{% endif %}
+{% endfunc %}
+
+{% func narrativeRenderTags(tags map[string]string) %}
+{% code
+    keys := make([]string, 0, len(tags))
+    for k := range tags {
+        keys = append(keys, k)
+    }
+    sort.Strings(keys)
+%}
+{% for _, k := range keys %}
+- **{%s k %}**: {%s tags[k] %}
+{% endfor %}
+{% endfunc %}
+
+{% func narrativeRenderBlocks(blocks []ContentBlock) %}
+{% for i, block := range blocks %}
+{%= narrativeRenderBlock(block) %}
+{% if i < len(blocks)-1 %}
+
+{% endif %}
+{% endfor %}
+{% endfunc %}
+
+{% func narrativeRenderBlock(block ContentBlock) %}
+{% if block.Title != "" %}
+**{%s block.Title %}**
+
+{% endif %}
+{% switch block.Type %}
+{% case ContentBlockKVPairs %}
+{% for _, pair := range block.Pairs %}
+- **{%s pair.Key %}**: {%s pair.Value %}
+{% endfor %}
+{% case ContentBlockList %}
+{% for _, item := range block.Items %}
+- {%s item.Text %}
+{% endfor %}
+{% case ContentBlockText %}
+{%s block.Content %}
+{% case ContentBlockTable %}
+| {%s strings.Join(block.Headers, " | ") %} |
+| {%s narrativeTableSep(len(block.Headers)) %} |
+{% for _, row := range block.Rows %}
+| {%s strings.Join(row, " | ") %} |
+{% endfor %}
+{% case ContentBlockMetric %}
+- **{%s block.Label %}**: {%s block.Value %}{% if block.Target != "" %} (target: {%s block.Target %}){% endif %} — {%s narrativeStatusText(block.Status) %}
+{% endswitch %}
+{% endfunc %}
+
+{% code
+func narrativeStatusText(s Status) string {
+    switch s {
+    case StatusGo:
+        return "PASS"
+    case StatusWarn:
+        return "WARNING"
+    case StatusNoGo:
+        return "FAIL"
+    case StatusSkip:
+        return "SKIP"
+    default:
+        return string(s)
+    }
+}
+
+func narrativeTableSep(cols int) string {
+    parts := make([]string, cols)
+    for i := range parts {
+        parts[i] = "---"
+    }
+    return strings.Join(parts, " | ")
+}
+%}
