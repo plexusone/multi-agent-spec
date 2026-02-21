@@ -8,6 +8,51 @@
   "maintainers": ["agentplexus"],
   "releases": [
     {
+      "version": "v0.7.0",
+      "date": "2026-02-21",
+      "highlights": [
+        { "description": "Workflow categories: deterministic and self-directed paradigms" },
+        { "description": "Self-directed workflow types: crew, swarm, council" },
+        { "description": "Collaboration config, message types, and agent role fields" },
+        { "description": "QuickTemplate-based rendering for box and narrative formats" }
+      ],
+      "added": [
+        { "description": "`WorkflowCategory` type with `CategoryDeterministic` and `CategorySelfDirected`", "commit": "62a135a" },
+        { "description": "`WorkflowType` constants: `WorkflowChain`, `WorkflowScatter`, `WorkflowGraph`, `WorkflowCrew`, `WorkflowSwarm`, `WorkflowCouncil`", "commit": "62a135a" },
+        { "description": "`WorkflowType.Category()`, `IsDeterministic()`, `IsSelfDirected()` methods", "commit": "62a135a" },
+        { "description": "`Team.Collaboration` field for self-directed workflow config", "commit": "62a135a" },
+        { "description": "`Team.SelfClaim`, `Team.PlanApproval` convenience fields", "commit": "62a135a" },
+        { "description": "`Team.Validate()` method for workflow-specific validation", "commit": "62a135a" },
+        { "description": "`Team.WorkflowCategory()`, `IsDeterministic()`, `IsSelfDirected()`, `EffectiveLead()` methods", "commit": "62a135a" },
+        { "description": "`Team.WithCollaboration()`, `WithSelfClaim()`, `WithPlanApproval()` builder methods", "commit": "62a135a" },
+        { "description": "`CollaborationConfig` with `Lead`, `Specialists`, `TaskQueue`, `Consensus`, `Channels`", "commit": "214f5ff" },
+        { "description": "`ConsensusRules` with `RequiredAgreement`, `MaxRounds`, `TieBreaker`", "commit": "214f5ff" },
+        { "description": "`Channel` and `ChannelType` (direct, broadcast, pub-sub)", "commit": "214f5ff" },
+        { "description": "`Message` type for inter-agent communication", "commit": "214f5ff" },
+        { "description": "`MessageType` constants: `MsgDelegateWork`, `MsgAskQuestion`, `MsgShareFinding`, `MsgRequestApproval`, `MsgChallenge`, `MsgVote`, etc.", "commit": "214f5ff" },
+        { "description": "`NewMessage()` constructor with auto-generated ID and timestamp", "commit": "214f5ff" },
+        { "description": "`Message.IsBroadcast()` method", "commit": "214f5ff" },
+        { "description": "`Agent.Role`, `Goal`, `Backstory` fields for self-directed workflows", "commit": "62a135a" },
+        { "description": "`Agent.Delegation` field with `DelegationConfig`", "commit": "62a135a" },
+        { "description": "`DelegationConfig` with `AllowDelegation`, `CanDelegateTo`, `CanReceiveFrom`", "commit": "62a135a" },
+        { "description": "`Agent.CanDelegate()`, `CanDelegateTo()`, `CanReceiveFrom()` methods", "commit": "62a135a" },
+        { "description": "`Agent.WithRole()`, `WithGoal()`, `WithBackstory()`, `WithDelegation()` builder methods", "commit": "62a135a" },
+        { "description": "QuickTemplate-based rendering with `box.qtpl` and `narrative.qtpl`", "commit": "5a23428" },
+        { "description": "`ClaudeCodeConfig.TeamMode`, `TeammateMode`, `EnableTeams` fields", "commit": "62a135a" },
+        { "description": "`CrewAIConfig.AllowDelegation`, `ManagerLLM` fields", "commit": "62a135a" }
+      ],
+      "changed": [
+        { "description": "**Breaking**: Workflow types renamed - `WorkflowSequential`→`WorkflowChain`, `WorkflowParallel`→`WorkflowScatter`, `WorkflowDAG`→`WorkflowGraph`", "commit": "62a135a" }
+      ],
+      "tests": [
+        { "description": "Tests for `Message` types and constructors", "commit": "53070c7" },
+        { "description": "Tests for `CollaborationConfig` and `ConsensusRules`", "commit": "53070c7" },
+        { "description": "Tests for `Team.Validate()` with workflow-specific validation", "commit": "53070c7" },
+        { "description": "Tests for workflow category methods", "commit": "53070c7" },
+        { "description": "Tests for agent delegation methods", "commit": "53070c7" }
+      ]
+    },
+    {
       "version": "v0.6.0",
       "date": "2026-02-14",
       "highlights": [

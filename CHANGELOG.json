@@ -7,6 +7,41 @@
   "maintainers": ["agentplexus"],
   "releases": [
     {
+      "version": "v0.6.0",
+      "date": "2026-02-21",
+      "highlights": [
+        { "description": "Workflow categories: deterministic (chain, scatter, graph) and self-directed (crew, swarm, council)" },
+        { "description": "Collaboration config for self-directed workflows with lead agents, task queues, and consensus rules" },
+        { "description": "Message schema for inter-agent communication" },
+        { "description": "MkDocs documentation site with Material theme" }
+      ],
+      "added": [
+        { "description": "Message schema (`schema/message/message.schema.json`) for inter-agent messaging", "commit": "64ed179" },
+        { "description": "Workflow categories: `deterministic` and `self-directed`", "commit": "b83c942" },
+        { "description": "Workflow types: `chain`, `scatter`, `graph` (deterministic); `crew`, `swarm`, `council` (self-directed)", "commit": "b83c942" },
+        { "description": "CollaborationConfig with `lead`, `specialists`, `task_queue`, `consensus`, `channels`", "commit": "b83c942" },
+        { "description": "ConsensusRules with `required_agreement`, `max_rounds`, `tie_breaker`", "commit": "b83c942" },
+        { "description": "Channel types: `direct`, `broadcast`, `pub-sub`", "commit": "b83c942" },
+        { "description": "Agent role fields: `role`, `goal`, `backstory`", "commit": "b83c942" },
+        { "description": "DelegationConfig with `allow_delegation`, `can_delegate_to`, `can_receive_from`", "commit": "b83c942" },
+        { "description": "Team fields: `collaboration`, `self_claim`, `plan_approval`", "commit": "b83c942" },
+        { "description": "Message types: delegate_work, ask_question, share_finding, request_approval, challenge, vote, etc.", "commit": "64ed179" }
+      ],
+      "changed": [
+        { "description": "**Breaking**: Workflow types renamed - `sequential`→`chain`, `parallel`→`scatter`, `dag`→`graph`", "commit": "b83c942" },
+        { "description": "Deployment schema: ClaudeCodeConfig adds `team_mode`, `teammate_mode`, `enable_teams`", "commit": "b83c942" },
+        { "description": "Deployment schema: CrewAIConfig adds `allowDelegation`, `managerLlm`", "commit": "b83c942" }
+      ],
+      "documentation": [
+        { "description": "MkDocs documentation site with Material theme", "commit": "9978085" },
+        { "description": "Release notes for v0.1.0 through v0.6.0", "commit": "9978085" },
+        { "description": "Complete agent.md with role fields and DelegationConfig", "commit": "8144273" },
+        { "description": "Complete team.md with all workflow types and collaboration config", "commit": "9978085" },
+        { "description": "Complete deployment.md with self-directed platform mappings", "commit": "8144273" },
+        { "description": "Complete sdk/go.md with full API reference", "commit": "8144273" }
+      ]
+    },
+    {
       "version": "v0.5.0",
       "date": "2026-02-14",
       "highlights": [
