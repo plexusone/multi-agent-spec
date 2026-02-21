@@ -100,6 +100,20 @@
         },
         "context": {
           "type": "string"
+        },
+        "collaboration": {
+          "$ref": "#/$defs/CollaborationConfig",
+          "description": "Collaboration configuration for self-directed workflows"
+        },
+        "self_claim": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow agents to self-claim tasks from shared queue (swarm workflow)"
+        },
+        "plan_approval": {
+          "type": "boolean",
+          "default": false,
+          "description": "Require plan approval before implementation (crew workflow)"
         }
       },
       "additionalProperties": false,
@@ -109,6 +123,84 @@
         "version",
         "agents"
       ]
+    },
+    "CollaborationConfig": {
+      "type": "object",
+      "description": "Configuration for how agents interact in self-directed workflows",
+      "properties": {
+        "lead": {
+          "type": "string",
+          "description": "Lead agent name (required for 'crew' workflow)"
+        },
+        "specialists": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Non-delegating specialist agent names"
+        },
+        "task_queue": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable shared task queue for self-claiming (for 'swarm' workflow)"
+        },
+        "consensus": {
+          "$ref": "#/$defs/ConsensusRules"
+        },
+        "channels": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Channel" },
+          "description": "Communication channels between agents"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ConsensusRules": {
+      "type": "object",
+      "description": "Rules for how agents reach agreement (council workflow)",
+      "properties": {
+        "required_agreement": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.5,
+          "description": "Fraction of agents that must agree (e.g., 0.66 for 2/3 majority)"
+        },
+        "max_rounds": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 3,
+          "description": "Maximum debate rounds before forcing decision"
+        },
+        "tie_breaker": {
+          "type": "string",
+          "description": "Agent name to break ties, or 'lead' for lead agent"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Channel": {
+      "type": "object",
+      "description": "Communication channel between agents",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Channel identifier"
+        },
+        "type": {
+          "$ref": "#/$defs/ChannelType"
+        },
+        "participants": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Agent names or '*' for all agents"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ChannelType": {
+      "type": "string",
+      "enum": ["direct", "broadcast", "pub-sub"],
+      "description": "Communication channel type"
     },
     "Workflow": {
       "properties": {
@@ -128,13 +220,15 @@
     "WorkflowType": {
       "type": "string",
       "enum": [
-        "sequential",
-        "parallel",
-        "dag",
-        "orchestrated"
+        "chain",
+        "scatter",
+        "graph",
+        "crew",
+        "swarm",
+        "council"
       ],
-      "description": "Workflow execution pattern",
-      "default": "orchestrated"
+      "description": "Workflow execution pattern. Deterministic (schema controls): chain, scatter, graph. Self-directed (agents control): crew, swarm, council.",
+      "default": "graph"
     }
   },
   "title": "Multi-Agent Spec - Team Definition",

@@ -85,6 +85,23 @@
         },
         "format": {
           "type": "string"
+        },
+        "team_mode": {
+          "type": "string",
+          "enum": ["subagent", "team"],
+          "default": "subagent",
+          "description": "Whether to use subagents or agent teams"
+        },
+        "teammate_mode": {
+          "type": "string",
+          "enum": ["in-process", "tmux", "auto"],
+          "default": "auto",
+          "description": "Display mode for agent teams"
+        },
+        "enable_teams": {
+          "type": "boolean",
+          "default": false,
+          "description": "Set CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
         }
       },
       "additionalProperties": false,
@@ -122,6 +139,15 @@
         },
         "maxIterations": {
           "type": "integer"
+        },
+        "allowDelegation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable agent delegation in CrewAI"
+        },
+        "managerLlm": {
+          "type": "string",
+          "description": "Model for manager agent in hierarchical process"
         }
       },
       "additionalProperties": false,

@@ -58,6 +58,21 @@
             "$ref": "#/$defs/Task"
           },
           "type": "array"
+        },
+        "role": {
+          "type": "string",
+          "description": "Agent's role title for self-directed workflows (e.g., 'Security Analyst')"
+        },
+        "goal": {
+          "type": "string",
+          "description": "What the agent aims to achieve in this role"
+        },
+        "backstory": {
+          "type": "string",
+          "description": "Context and background for the agent's role"
+        },
+        "delegation": {
+          "$ref": "#/$defs/DelegationConfig"
         }
       },
       "additionalProperties": false,
@@ -65,6 +80,28 @@
       "required": [
         "name"
       ]
+    },
+    "DelegationConfig": {
+      "type": "object",
+      "description": "Delegation permissions for self-directed workflows",
+      "properties": {
+        "allow_delegation": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this agent can delegate work to others"
+        },
+        "can_delegate_to": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Agent names this agent can delegate to (empty means no restrictions)"
+        },
+        "can_receive_from": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Agent names this agent can receive delegations from (empty means no restrictions)"
+        }
+      },
+      "additionalProperties": false
     },
     "Model": {
       "type": "string",
