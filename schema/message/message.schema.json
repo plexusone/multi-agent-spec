@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/message/message.schema.json",
+  "$ref": "#/$defs/Message",
+  "$defs": {
+    "Message": {
+      "type": "object",
+      "description": "Inter-agent message for self-directed workflows",
+      "required": ["id", "type", "from", "content", "timestamp"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique message identifier"
+        },
+        "type": {
+          "$ref": "#/$defs/MessageType"
+        },
+        "from": {
+          "type": "string",
+          "description": "Sender agent name"
+        },
+        "to": {
+          "type": "string",
+          "description": "Recipient agent name or '*' for broadcast"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Message subject line"
+        },
+        "content": {
+          "type": "string",
+          "description": "Message body"
+        },
+        "attachments": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Attachment" },
+          "description": "Message attachments"
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Additional message metadata"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Message timestamp in ISO 8601 format"
+        }
+      },
+      "additionalProperties": false
+    },
+    "MessageType": {
+      "type": "string",
+      "enum": [
+        "delegate_work",
+        "ask_question",
+        "share_finding",
+        "request_approval",
+        "approval",
+        "rejection",
+        "challenge",
+        "vote",
+        "task_claimed",
+        "task_completed",
+        "shutdown_request",
+        "shutdown_approved"
+      ],
+      "description": "Type of inter-agent message"
+    },
+    "Attachment": {
+      "type": "object",
+      "description": "Message attachment",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Attachment name or identifier"
+        },
+        "type": {
+          "$ref": "#/$defs/AttachmentType"
+        },
+        "data": {
+          "description": "Attachment data (type depends on attachment type)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "AttachmentType": {
+      "type": "string",
+      "enum": ["file", "data", "reference"],
+      "description": "Type of attachment: file (path), data (inline), reference (external)"
+    }
+  },
+  "title": "Multi-Agent Spec - Message Definition",
+  "description": "Schema for inter-agent messages in self-directed workflows"
+}
