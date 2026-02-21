@@ -11,7 +11,7 @@
   ],
   "orchestrator": "stats-orchestrator",
   "workflow": {
-    "type": "orchestrated",
+    "type": "graph",
     "steps": [
       {
         "name": "research",
