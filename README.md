@@ -113,7 +113,7 @@ specs/
   ],
   "orchestrator": "prd/lead",
   "workflow": {
-    "type": "dag",
+    "type": "graph",
     "steps": [
       {
         "name": "discovery",
@@ -176,7 +176,7 @@ Defines agent teams with orchestration patterns.
   "agents": ["orchestrator", "researcher", "writer"],
   "orchestrator": "orchestrator",
   "workflow": {
-    "type": "orchestrated"
+    "type": "crew"
   }
 }
 ```
@@ -186,6 +186,12 @@ Defines agent teams with orchestration patterns.
 Defines target platforms and configurations.
 
 - **Schema**: [`schema/deployment/deployment.schema.json`](schema/deployment/deployment.schema.json)
+
+### Message Schema (v0.8.0+)
+
+Defines inter-agent messages for self-directed workflows.
+
+- **Schema**: [`schema/message/message.schema.json`](schema/message/message.schema.json)
 
 ```json
 {
@@ -208,6 +214,296 @@ Defines target platforms and configurations.
       }
     }
   ]
+}
+```
+
+## Workflow Types
+
+Multi-agent-spec supports two categories of workflow patterns:
+
+### Workflow Categories
+
+| Category | Description | Control |
+|----------|-------------|---------|
+| **Deterministic** | Execution paths defined in the schema | Schema controls agent execution |
+| **Self-Directed** | Agents decide execution paths at runtime | Agents control their own coordination |
+
+### Deterministic Workflows
+
+Schema-controlled execution patterns where the workflow definition determines the order and dependencies:
+
+| Type | Pattern | Description |
+|------|---------|-------------|
+| `chain` | A → B → C | Sequential execution, each step waits for the previous |
+| `scatter` | A → [B,C,D] → E | Parallel fan-out with fan-in aggregation |
+| `graph` | DAG | Directed acyclic graph with explicit dependencies |
+
+### Self-Directed Workflows
+
+Agent-controlled execution patterns where agents coordinate autonomously (requires v0.8.0+):
+
+| Type | Pattern | Description |
+|------|---------|-------------|
+| `crew` | Lead + Specialists | Lead agent delegates tasks to specialist agents |
+| `swarm` | Shared Queue | Self-organizing agents with shared task queue |
+| `council` | Peer Debate | Peer agents debate and reach consensus |
+
+### Usage Example
+
+```json
+{
+  "name": "release-team",
+  "version": "1.0.0",
+  "agents": ["version-analyzer", "changelog-writer", "release-publisher"],
+  "workflow": {
+    "type": "graph",
+    "steps": [
+      {
+        "name": "analyze",
+        "agent": "version-analyzer"
+      },
+      {
+        "name": "changelog",
+        "agent": "changelog-writer",
+        "depends_on": ["analyze"]
+      },
+      {
+        "name": "publish",
+        "agent": "release-publisher",
+        "depends_on": ["changelog"]
+      }
+    ]
+  }
+}
+```
+
+### Choosing a Workflow Type
+
+| Use Case | Recommended Type |
+|----------|-----------------|
+| Simple pipeline with ordered steps | `chain` |
+| Independent tasks that can run concurrently | `scatter` |
+| Complex dependencies between steps | `graph` |
+| Dynamic task delegation by a lead agent | `crew` |
+| Autonomous agent collaboration | `swarm` |
+| Multi-perspective decision making | `council` |
+
+## Self-Directed Workflows (v0.8.0+)
+
+Self-directed workflows enable agents to coordinate autonomously at runtime. This requires additional configuration for agent roles, collaboration patterns, and inter-agent communication.
+
+### Agent Role Configuration
+
+For self-directed workflows, agents should define role-based fields:
+
+```markdown
+---
+name: security-reviewer
+role: Security Analyst
+goal: Identify security vulnerabilities and recommend mitigations
+backstory: |
+  Senior security engineer with 10 years of experience in
+  application security, penetration testing, and secure code review.
+delegation:
+  allow_delegation: false
+model: sonnet
+tools: [Read, Grep, Glob, Bash]
+---
+
+# Security Review Instructions
+
+When reviewing code:
+1. Check for injection vulnerabilities (SQL, XSS, command injection)
+2. Validate authentication and authorization logic
+3. Look for hardcoded secrets or credentials
+
+Share findings via the 'findings' channel.
+Challenge other reviewers if you see security implications they missed.
+```
+
+### Delegation Configuration
+
+Control which agents can delegate work to others:
+
+```yaml
+delegation:
+  allow_delegation: true           # Can this agent delegate?
+  can_delegate_to:                 # Restrict delegation targets (empty = any)
+    - researcher
+    - writer
+  can_receive_from:                # Restrict delegation sources (empty = any)
+    - lead
+```
+
+### Crew Workflow Example
+
+A lead agent coordinates specialist agents:
+
+```json
+{
+  "name": "code-review-crew",
+  "version": "1.0.0",
+  "agents": ["lead-reviewer", "security-reviewer", "performance-reviewer"],
+  "workflow": {
+    "type": "crew"
+  },
+  "collaboration": {
+    "lead": "lead-reviewer",
+    "specialists": ["security-reviewer", "performance-reviewer"]
+  },
+  "plan_approval": true
+}
+```
+
+### Swarm Workflow Example
+
+Self-organizing agents with a shared task queue:
+
+```json
+{
+  "name": "research-swarm",
+  "version": "1.0.0",
+  "agents": ["researcher-1", "researcher-2", "researcher-3", "synthesizer"],
+  "workflow": {
+    "type": "swarm"
+  },
+  "collaboration": {
+    "task_queue": true,
+    "channels": [
+      {
+        "name": "discoveries",
+        "type": "broadcast",
+        "participants": ["*"]
+      }
+    ]
+  },
+  "self_claim": true
+}
+```
+
+### Council Workflow Example
+
+Peer agents debate and reach consensus:
+
+```json
+{
+  "name": "code-review-council",
+  "version": "1.0.0",
+  "agents": ["security-reviewer", "performance-reviewer", "test-reviewer"],
+  "workflow": {
+    "type": "council"
+  },
+  "collaboration": {
+    "consensus": {
+      "required_agreement": 0.66,
+      "max_rounds": 3,
+      "tie_breaker": "security-reviewer"
+    },
+    "channels": [
+      {
+        "name": "findings",
+        "type": "broadcast",
+        "participants": ["*"]
+      },
+      {
+        "name": "challenges",
+        "type": "direct",
+        "participants": ["*"]
+      }
+    ]
+  }
+}
+```
+
+### Collaboration Configuration
+
+| Field | Description | Used By |
+|-------|-------------|---------|
+| `lead` | Lead agent name | `crew` |
+| `specialists` | Non-delegating specialist agent names | `crew` |
+| `task_queue` | Enable shared task queue | `swarm` |
+| `consensus.required_agreement` | Fraction of agents that must agree (0.0-1.0) | `council` |
+| `consensus.max_rounds` | Maximum debate rounds | `council` |
+| `consensus.tie_breaker` | Agent to break ties | `council` |
+| `channels` | Communication channels between agents | All |
+
+### Channel Types
+
+| Type | Description | Use Case |
+|------|-------------|----------|
+| `direct` | Point-to-point messaging | Private communication between two agents |
+| `broadcast` | One-to-all messaging | Sharing findings with all agents |
+| `pub-sub` | Topic-based messaging | Agents subscribe to relevant topics |
+
+### Message Types
+
+Inter-agent messages support the following types:
+
+| Type | Description | Workflow |
+|------|-------------|----------|
+| `delegate_work` | Assign task to another agent | `crew` |
+| `ask_question` | Request information | All |
+| `share_finding` | Broadcast a discovery | All |
+| `request_approval` | Request approval for action | `crew` |
+| `approval` / `rejection` | Respond to approval request | `crew` |
+| `challenge` | Challenge another agent's finding | `council` |
+| `vote` | Cast a vote on a proposal | `council` |
+| `task_claimed` / `task_completed` | Task queue updates | `swarm` |
+| `shutdown_request` / `shutdown_approved` | Graceful shutdown | All |
+
+### Platform Mappings
+
+#### Claude Code Agent Teams
+
+| Team Config | Claude Code Config |
+|-------------|-------------------|
+| `workflow.type: crew` | `team_mode: team`, lead spawns teammates |
+| `workflow.type: swarm` | `team_mode: team`, `self_claim: true` |
+| `workflow.type: council` | `team_mode: team`, broadcast + challenge |
+| `collaboration.lead` | Lead session |
+| `plan_approval: true` | `--require-plan-approval` |
+
+**Deployment example:**
+
+```json
+{
+  "name": "claude-code-teams",
+  "platform": "claude-code",
+  "mode": "multi-process",
+  "claudeCode": {
+    "agentDir": ".claude/agents",
+    "format": "markdown",
+    "team_mode": "team",
+    "teammate_mode": "in-process",
+    "enable_teams": true
+  }
+}
+```
+
+#### CrewAI
+
+| Team Config | CrewAI Config |
+|-------------|---------------|
+| `workflow.type: crew` | `process: hierarchical` |
+| `workflow.type: swarm` | `process: consensual` |
+| `workflow.type: council` | `process: consensual` + voting |
+| `collaboration.lead` | Manager agent |
+| `agent.delegation.allow_delegation` | `allow_delegation=True` |
+
+**Deployment example:**
+
+```json
+{
+  "name": "crewai-local",
+  "platform": "crewai",
+  "mode": "single-process",
+  "crewai": {
+    "model": "claude-3-5-sonnet",
+    "processType": "hierarchical",
+    "memory": true,
+    "allowDelegation": true,
+    "managerLlm": "claude-3-5-sonnet"
+  }
 }
 ```
 
@@ -421,7 +717,7 @@ Canonical tool names map to platform-specific identifiers:
 ### Go SDK
 
 ```bash
-go get github.com/agentplexus/multi-agent-spec/sdk/go@v0.1.0
+go get github.com/agentplexus/multi-agent-spec/sdk/go@v0.8.0
 ```
 
 **Note for maintainers:** The Go module is located in `sdk/go/`. Per [Go module versioning](https://go.dev/ref/mod#vcs-version), tags for nested modules must be prefixed with the module path:
