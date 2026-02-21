@@ -81,6 +81,20 @@ type Task struct {
 	HumanInLoop string `json:"human_in_loop,omitempty"`
 }
 
+// DelegationConfig defines delegation permissions for an agent.
+type DelegationConfig struct {
+	// AllowDelegation enables this agent to delegate work to others.
+	AllowDelegation bool `json:"allow_delegation,omitempty" yaml:"allow_delegation,omitempty"`
+
+	// CanDelegateTo lists agent names this agent can delegate to.
+	// Empty means no restrictions (can delegate to any agent).
+	CanDelegateTo []string `json:"can_delegate_to,omitempty" yaml:"can_delegate_to,omitempty"`
+
+	// CanReceiveFrom lists agent names this agent can receive delegations from.
+	// Empty means no restrictions (can receive from any agent).
+	CanReceiveFrom []string `json:"can_receive_from,omitempty" yaml:"can_receive_from,omitempty"`
+}
+
 // Agent represents an agent definition.
 type Agent struct {
 	// Name is the unique identifier for the agent (lowercase, hyphenated).
@@ -121,6 +135,20 @@ type Agent struct {
 
 	// Tasks are the tasks this agent can perform.
 	Tasks []Task `json:"tasks,omitempty" yaml:"tasks,omitempty"`
+
+	// Role-based fields for self-directed workflows
+
+	// Role is the agent's role title (e.g., "Security Analyst").
+	Role string `json:"role,omitempty" yaml:"role,omitempty"`
+
+	// Goal describes what the agent aims to achieve.
+	Goal string `json:"goal,omitempty" yaml:"goal,omitempty"`
+
+	// Backstory provides context and background for the agent's role.
+	Backstory string `json:"backstory,omitempty" yaml:"backstory,omitempty"`
+
+	// Delegation defines delegation permissions for self-directed workflows.
+	Delegation *DelegationConfig `json:"delegation,omitempty" yaml:"delegation,omitempty"`
 }
 
 // NewAgent creates a new Agent with the given name and description.
@@ -180,4 +208,65 @@ func ParseQualifiedName(qualifiedName string) (namespace, name string) {
 		}
 	}
 	return "", qualifiedName
+}
+
+// CanDelegate returns true if this agent can delegate work.
+func (a *Agent) CanDelegate() bool {
+	return a.Delegation != nil && a.Delegation.AllowDelegation
+}
+
+// CanDelegateTo returns true if this agent can delegate to the target agent.
+func (a *Agent) CanDelegateTo(target string) bool {
+	if !a.CanDelegate() {
+		return false
+	}
+	if len(a.Delegation.CanDelegateTo) == 0 {
+		return true // No restrictions
+	}
+	for _, name := range a.Delegation.CanDelegateTo {
+		if name == target {
+			return true
+		}
+	}
+	return false
+}
+
+// CanReceiveFrom returns true if this agent can receive delegations from the source agent.
+func (a *Agent) CanReceiveFrom(source string) bool {
+	if a.Delegation == nil {
+		return true // No delegation config means can receive from anyone
+	}
+	if len(a.Delegation.CanReceiveFrom) == 0 {
+		return true // No restrictions
+	}
+	for _, name := range a.Delegation.CanReceiveFrom {
+		if name == source {
+			return true
+		}
+	}
+	return false
+}
+
+// WithRole sets the agent's role and returns the agent for chaining.
+func (a *Agent) WithRole(role string) *Agent {
+	a.Role = role
+	return a
+}
+
+// WithGoal sets the agent's goal and returns the agent for chaining.
+func (a *Agent) WithGoal(goal string) *Agent {
+	a.Goal = goal
+	return a
+}
+
+// WithBackstory sets the agent's backstory and returns the agent for chaining.
+func (a *Agent) WithBackstory(backstory string) *Agent {
+	a.Backstory = backstory
+	return a
+}
+
+// WithDelegation sets the agent's delegation config and returns the agent for chaining.
+func (a *Agent) WithDelegation(delegation *DelegationConfig) *Agent {
+	a.Delegation = delegation
+	return a
 }

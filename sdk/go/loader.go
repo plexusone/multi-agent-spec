@@ -13,6 +13,36 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Loader loads multi-agent-spec definitions from files.
+type Loader struct{}
+
+// LoaderOption configures the loader.
+type LoaderOption func(*Loader)
+
+// NewLoader creates a new loader with the given options.
+func NewLoader(opts ...LoaderOption) *Loader {
+	l := &Loader{}
+	for _, opt := range opts {
+		opt(l)
+	}
+	return l
+}
+
+// LoadTeam loads a Team from a JSON file.
+func (l *Loader) LoadTeam(path string) (*Team, error) {
+	return LoadTeamFromFile(path)
+}
+
+// LoadAgent loads an Agent from a markdown file.
+func (l *Loader) LoadAgent(path string) (*Agent, error) {
+	return LoadAgentFromFile(path)
+}
+
+// LoadDeployment loads a Deployment from a JSON file.
+func (l *Loader) LoadDeployment(path string) (*Deployment, error) {
+	return LoadDeploymentFromFile(path)
+}
+
 // LoadAgentFromFile loads an Agent from a markdown file with YAML frontmatter.
 //
 // The file format is:

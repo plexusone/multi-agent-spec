@@ -182,6 +182,19 @@ func (d *Deployment) AddTarget(target Target) *Deployment {
 type ClaudeCodeConfig struct {
 	AgentDir string `json:"agentDir"`
 	Format   string `json:"format"`
+
+	// Self-directed workflow support
+
+	// TeamMode specifies whether to use subagents or agent teams.
+	// Values: "subagent" (default), "team"
+	TeamMode string `json:"team_mode,omitempty"`
+
+	// TeammateMode specifies the display mode for agent teams.
+	// Values: "in-process", "tmux", "auto" (default)
+	TeammateMode string `json:"teammate_mode,omitempty"`
+
+	// EnableTeams sets CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1.
+	EnableTeams bool `json:"enable_teams,omitempty"`
 }
 
 // KiroCLIConfig is the configuration for Kiro CLI platform.
@@ -242,6 +255,14 @@ type CrewAIConfig struct {
 	Memory        bool   `json:"memory,omitempty"`
 	ProcessType   string `json:"processType,omitempty"`
 	MaxIterations int    `json:"maxIterations,omitempty"`
+
+	// Self-directed workflow support
+
+	// AllowDelegation enables agent delegation in CrewAI.
+	AllowDelegation bool `json:"allowDelegation,omitempty"`
+
+	// ManagerLLM specifies the model for the manager agent in hierarchical process.
+	ManagerLLM string `json:"managerLlm,omitempty"`
 }
 
 // AutoGenConfig is the configuration for Microsoft AutoGen deployment.
