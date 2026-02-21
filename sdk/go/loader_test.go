@@ -154,7 +154,7 @@ func TestLoadTeamFromFile(t *testing.T) {
   "agents": ["agent-one", "agent-two"],
   "orchestrator": "agent-one",
   "workflow": {
-    "type": "dag",
+    "type": "graph",
     "steps": [
       {
         "name": "step-one",
@@ -199,8 +199,8 @@ func TestLoadTeamFromFile(t *testing.T) {
 		t.Fatal("Workflow should not be nil")
 	}
 
-	if team.Workflow.Type != WorkflowDAG {
-		t.Errorf("Workflow.Type = %q, want %q", team.Workflow.Type, WorkflowDAG)
+	if team.Workflow.Type != WorkflowGraph {
+		t.Errorf("Workflow.Type = %q, want %q", team.Workflow.Type, WorkflowGraph)
 	}
 
 	if len(team.Workflow.Steps) != 2 {
@@ -450,5 +450,42 @@ func TestLoadDeploymentFromFile(t *testing.T) {
 
 	if deployment.Targets[0].Platform != PlatformKiroCLI {
 		t.Errorf("Platform = %q, want %q", deployment.Targets[0].Platform, PlatformKiroCLI)
+	}
+}
+
+func TestNewLoader(t *testing.T) {
+	loader := NewLoader()
+	if loader == nil {
+		t.Error("NewLoader should return non-nil loader")
+	}
+}
+
+func TestLoader_LoadTeam(t *testing.T) {
+	tmpDir := t.TempDir()
+
+	teamJSON := `{
+  "name": "test-team",
+  "version": "1.0.0",
+  "agents": ["agent-a"],
+  "workflow": { "type": "chain" }
+}`
+
+	path := filepath.Join(tmpDir, "team.json")
+	if err := os.WriteFile(path, []byte(teamJSON), 0600); err != nil {
+		t.Fatal(err)
+	}
+
+	loader := NewLoader()
+	team, err := loader.LoadTeam(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if team.Name != "test-team" {
+		t.Errorf("Name = %q, want %q", team.Name, "test-team")
+	}
+
+	if team.Workflow.Type != WorkflowChain {
+		t.Errorf("Workflow.Type = %q, want %q", team.Workflow.Type, WorkflowChain)
 	}
 }

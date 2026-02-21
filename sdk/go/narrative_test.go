@@ -116,8 +116,8 @@ func TestRenderNarrative(t *testing.T) {
 		t.Error("expected recommendation section")
 	}
 
-	// Check tasks table
-	if !strings.Contains(output, "| vuln-scan | WARNING | 2 findings |") {
+	// Check tasks table (now includes Severity column)
+	if !strings.Contains(output, "| vuln-scan | WARNING |  | 2 findings |") {
 		t.Error("expected task in table")
 	}
 
@@ -257,5 +257,68 @@ func TestNarrativeWithoutOptionalFields(t *testing.T) {
 	}
 	if !strings.Contains(output, "### Test Team") {
 		t.Error("expected team name")
+	}
+}
+
+func TestQuickNarrativeRendererParity(t *testing.T) {
+	// Test that QuickNarrativeRenderer produces similar output to NarrativeRenderer
+	report := &TeamReport{
+		Title:       "Security Analysis Report",
+		Project:     "test-project",
+		Version:     "1.0.0",
+		Phase:       "SECURITY REVIEW",
+		Summary:     "This report summarizes the security analysis findings.",
+		GeneratedAt: time.Date(2026, 2, 12, 0, 0, 0, 0, time.UTC),
+		Tags: map[string]string{
+			"customer": "acme",
+		},
+		Teams: []TeamSection{
+			{
+				ID:      "security",
+				Name:    "Security Analysis",
+				Status:  StatusWarn,
+				Verdict: "NEEDS_ATTENTION",
+				Tasks: []TaskResult{
+					{ID: "vuln-scan", Status: StatusWarn, Severity: "high", Detail: "2 findings"},
+				},
+			},
+		},
+		Status: StatusWarn,
+	}
+
+	var stdBuf, quickBuf bytes.Buffer
+
+	// Render with standard renderer
+	stdRenderer := NewNarrativeRenderer(&stdBuf)
+	if err := stdRenderer.Render(report); err != nil {
+		t.Fatalf("standard render failed: %v", err)
+	}
+
+	// Render with quick renderer
+	quickRenderer := NewQuickNarrativeRenderer(&quickBuf)
+	if err := quickRenderer.Render(report); err != nil {
+		t.Fatalf("quick render failed: %v", err)
+	}
+
+	stdOutput := stdBuf.String()
+	quickOutput := quickBuf.String()
+
+	// Both should contain key elements
+	for _, expected := range []string{
+		"Security Analysis Report",
+		"Security Analysis",
+		"NEEDS_ATTENTION",
+		"vuln-scan",
+		"WARNING",
+		"high",
+		"customer",
+		"acme",
+	} {
+		if !strings.Contains(stdOutput, expected) {
+			t.Errorf("standard output missing %q", expected)
+		}
+		if !strings.Contains(quickOutput, expected) {
+			t.Errorf("quick output missing %q", expected)
+		}
 	}
 }

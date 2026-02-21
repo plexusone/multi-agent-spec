@@ -10,16 +10,144 @@ func TestWorkflowTypeConstants(t *testing.T) {
 		wt   WorkflowType
 		want string
 	}{
-		{WorkflowSequential, "sequential"},
-		{WorkflowParallel, "parallel"},
-		{WorkflowDAG, "dag"},
-		{WorkflowOrchestrated, "orchestrated"},
+		{WorkflowChain, "chain"},
+		{WorkflowScatter, "scatter"},
+		{WorkflowGraph, "graph"},
+		{WorkflowCrew, "crew"},
+		{WorkflowSwarm, "swarm"},
+		{WorkflowCouncil, "council"},
 	}
 
 	for _, tt := range tests {
 		if string(tt.wt) != tt.want {
 			t.Errorf("WorkflowType %v = %q, want %q", tt.wt, string(tt.wt), tt.want)
 		}
+	}
+}
+
+func TestWorkflowType_Category(t *testing.T) {
+	tests := []struct {
+		wt       WorkflowType
+		expected WorkflowCategory
+	}{
+		{WorkflowChain, CategoryDeterministic},
+		{WorkflowScatter, CategoryDeterministic},
+		{WorkflowGraph, CategoryDeterministic},
+		{WorkflowCrew, CategorySelfDirected},
+		{WorkflowSwarm, CategorySelfDirected},
+		{WorkflowCouncil, CategorySelfDirected},
+	}
+	for _, tt := range tests {
+		t.Run(string(tt.wt), func(t *testing.T) {
+			if got := tt.wt.Category(); got != tt.expected {
+				t.Errorf("Category() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestWorkflowType_IsDeterministic(t *testing.T) {
+	deterministic := []WorkflowType{
+		WorkflowChain, WorkflowScatter, WorkflowGraph,
+	}
+	selfDirected := []WorkflowType{
+		WorkflowCrew, WorkflowSwarm, WorkflowCouncil,
+	}
+
+	for _, wt := range deterministic {
+		if !wt.IsDeterministic() {
+			t.Errorf("%s should be deterministic", wt)
+		}
+		if wt.IsSelfDirected() {
+			t.Errorf("%s should not be self-directed", wt)
+		}
+	}
+	for _, wt := range selfDirected {
+		if wt.IsDeterministic() {
+			t.Errorf("%s should not be deterministic", wt)
+		}
+		if !wt.IsSelfDirected() {
+			t.Errorf("%s should be self-directed", wt)
+		}
+	}
+}
+
+func TestWorkflowCategory_String(t *testing.T) {
+	if CategoryDeterministic.String() != "deterministic" {
+		t.Errorf("CategoryDeterministic.String() = %q, want %q", CategoryDeterministic.String(), "deterministic")
+	}
+	if CategorySelfDirected.String() != "self-directed" {
+		t.Errorf("CategorySelfDirected.String() = %q, want %q", CategorySelfDirected.String(), "self-directed")
+	}
+}
+
+func TestTeam_WorkflowCategory(t *testing.T) {
+	tests := []struct {
+		name     string
+		team     *Team
+		expected WorkflowCategory
+	}{
+		{
+			name:     "nil workflow",
+			team:     &Team{Name: "test", Version: "1.0.0"},
+			expected: "",
+		},
+		{
+			name:     "chain workflow",
+			team:     &Team{Name: "test", Version: "1.0.0", Workflow: &Workflow{Type: WorkflowChain}},
+			expected: CategoryDeterministic,
+		},
+		{
+			name:     "crew workflow",
+			team:     &Team{Name: "test", Version: "1.0.0", Workflow: &Workflow{Type: WorkflowCrew}},
+			expected: CategorySelfDirected,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.team.WorkflowCategory(); got != tt.expected {
+				t.Errorf("WorkflowCategory() = %v, want %v", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestTeam_IsDeterministic(t *testing.T) {
+	deterministicTeam := &Team{
+		Name:     "test",
+		Version:  "1.0.0",
+		Workflow: &Workflow{Type: WorkflowGraph},
+	}
+	selfDirectedTeam := &Team{
+		Name:     "test",
+		Version:  "1.0.0",
+		Workflow: &Workflow{Type: WorkflowSwarm},
+	}
+	noWorkflowTeam := &Team{
+		Name:    "test",
+		Version: "1.0.0",
+	}
+
+	if !deterministicTeam.IsDeterministic() {
+		t.Error("graph workflow team should be deterministic")
+	}
+	if deterministicTeam.IsSelfDirected() {
+		t.Error("graph workflow team should not be self-directed")
+	}
+
+	if selfDirectedTeam.IsDeterministic() {
+		t.Error("swarm workflow team should not be deterministic")
+	}
+	if !selfDirectedTeam.IsSelfDirected() {
+		t.Error("swarm workflow team should be self-directed")
+	}
+
+	if noWorkflowTeam.IsDeterministic() {
+		t.Error("team without workflow should not be deterministic")
+	}
+	if noWorkflowTeam.IsSelfDirected() {
+		t.Error("team without workflow should not be self-directed")
 	}
 }
 
@@ -92,7 +220,7 @@ func TestStepOmitEmpty(t *testing.T) {
 
 func TestWorkflowSerialization(t *testing.T) {
 	workflow := Workflow{
-		Type: WorkflowDAG,
+		Type: WorkflowGraph,
 		Steps: []Step{
 			{Name: "s1", Agent: "a1"},
 			{Name: "s2", Agent: "a2", DependsOn: []string{"s1"}},
@@ -109,8 +237,8 @@ func TestWorkflowSerialization(t *testing.T) {
 		t.Fatalf("json.Unmarshal failed: %v", err)
 	}
 
-	if decoded.Type != WorkflowDAG {
-		t.Errorf("Type = %q, want %q", decoded.Type, WorkflowDAG)
+	if decoded.Type != WorkflowGraph {
+		t.Errorf("Type = %q, want %q", decoded.Type, WorkflowGraph)
 	}
 	if len(decoded.Steps) != 2 {
 		t.Errorf("len(Steps) = %d, want 2", len(decoded.Steps))
@@ -153,14 +281,14 @@ func TestTeamWithOrchestrator(t *testing.T) {
 }
 
 func TestTeamWithWorkflow(t *testing.T) {
-	workflow := &Workflow{Type: WorkflowOrchestrated}
+	workflow := &Workflow{Type: WorkflowCrew}
 	team := NewTeam("test", "1.0.0").WithWorkflow(workflow)
 
 	if team.Workflow == nil {
 		t.Error("Workflow should not be nil")
 	}
-	if team.Workflow.Type != WorkflowOrchestrated {
-		t.Errorf("Workflow.Type = %q, want %q", team.Workflow.Type, WorkflowOrchestrated)
+	if team.Workflow.Type != WorkflowCrew {
+		t.Errorf("Workflow.Type = %q, want %q", team.Workflow.Type, WorkflowCrew)
 	}
 }
 
@@ -168,7 +296,7 @@ func TestTeamChaining(t *testing.T) {
 	team := NewTeam("chained", "2.0.0").
 		WithAgents("a1", "a2").
 		WithOrchestrator("a1").
-		WithWorkflow(&Workflow{Type: WorkflowSequential})
+		WithWorkflow(&Workflow{Type: WorkflowChain})
 
 	if team.Name != "chained" {
 		t.Errorf("Name = %q, want %q", team.Name, "chained")
