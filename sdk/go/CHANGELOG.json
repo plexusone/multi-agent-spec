@@ -14,11 +14,11 @@
         { "description": "Organization rename from agentplexus to plexusone" }
       ],
       "changed": [
-        { "description": "**Breaking**: Go module path changed from `github.com/agentplexus/multi-agent-spec/sdk/go` to `github.com/plexusone/multi-agent-spec/sdk/go`" }
+        { "description": "**Breaking**: Go module path changed from `github.com/agentplexus/multi-agent-spec/sdk/go` to `github.com/plexusone/multi-agent-spec/sdk/go`", "commit": "3213a20" }
       ],
       "migration": [
-        { "description": "Update import paths: `import multiagentspec \"github.com/plexusone/multi-agent-spec/sdk/go\"`" },
-        { "description": "Update go.mod: `go get github.com/plexusone/multi-agent-spec/sdk/go@v0.8.0`" }
+        { "description": "Update import paths: `import multiagentspec \"github.com/plexusone/multi-agent-spec/sdk/go\"`", "commit": "3213a20" },
+        { "description": "Update go.mod: `go get github.com/plexusone/multi-agent-spec/sdk/go@v0.8.0`", "commit": "3213a20" }
       ]
     },
     {

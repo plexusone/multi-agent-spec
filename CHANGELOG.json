@@ -13,11 +13,11 @@
         { "description": "Organization rename from agentplexus to plexusone" }
       ],
       "changed": [
-        { "description": "**Breaking**: GitHub organization renamed from `agentplexus` to `plexusone`" },
-        { "description": "**Breaking**: Go module path changed from `github.com/agentplexus/multi-agent-spec` to `github.com/plexusone/multi-agent-spec`" },
-        { "description": "**Breaking**: NPM package renamed from `@agentplexus/multi-agent-spec` to `@plexusone/multi-agent-spec`" },
-        { "description": "JSON Schema `$id` URLs updated to new GitHub raw URLs" },
-        { "description": "Documentation site URL changed to `plexusone.github.io/multi-agent-spec`" }
+        { "description": "**Breaking**: GitHub organization renamed from `agentplexus` to `plexusone`", "commit": "3213a20" },
+        { "description": "**Breaking**: Go module path changed from `github.com/agentplexus/multi-agent-spec` to `github.com/plexusone/multi-agent-spec`", "commit": "3213a20" },
+        { "description": "**Breaking**: NPM package renamed from `@agentplexus/multi-agent-spec` to `@plexusone/multi-agent-spec`", "commit": "3213a20" },
+        { "description": "JSON Schema `$id` URLs updated to new GitHub raw URLs", "commit": "3213a20" },
+        { "description": "Documentation site URL changed to `plexusone.github.io/multi-agent-spec`", "commit": "3213a20" }
       ]
     },
     {
