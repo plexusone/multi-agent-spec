@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json",
+  "$id": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/report/team-report.schema.json",
   "$ref": "#/$defs/TeamReport",
   "$defs": {
     "ContentBlock": {

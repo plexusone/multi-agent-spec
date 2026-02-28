@@ -1,11 +1,25 @@
 {
   "irVersion": "1.0",
   "project": "multi-agent-spec",
-  "repository": "https://github.com/agentplexus/multi-agent-spec",
+  "repository": "https://github.com/plexusone/multi-agent-spec",
   "versioning": "semver",
   "commitConvention": "conventional",
-  "maintainers": ["agentplexus"],
+  "maintainers": ["plexusone"],
   "releases": [
+    {
+      "version": "v0.7.0",
+      "date": "2026-02-28",
+      "highlights": [
+        { "description": "Organization rename from agentplexus to plexusone" }
+      ],
+      "changed": [
+        { "description": "**Breaking**: GitHub organization renamed from `agentplexus` to `plexusone`" },
+        { "description": "**Breaking**: Go module path changed from `github.com/agentplexus/multi-agent-spec` to `github.com/plexusone/multi-agent-spec`" },
+        { "description": "**Breaking**: NPM package renamed from `@agentplexus/multi-agent-spec` to `@plexusone/multi-agent-spec`" },
+        { "description": "JSON Schema `$id` URLs updated to new GitHub raw URLs" },
+        { "description": "Documentation site URL changed to `plexusone.github.io/multi-agent-spec`" }
+      ]
+    },
     {
       "version": "v0.6.0",
       "date": "2026-02-21",

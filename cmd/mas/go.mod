@@ -1,9 +1,9 @@
-module github.com/agentplexus/multi-agent-spec/cmd/mas
+module github.com/plexusone/multi-agent-spec/cmd/mas
 
 go 1.24
 
 require (
-	github.com/agentplexus/multi-agent-spec/sdk/go v0.5.0
+	github.com/plexusone/multi-agent-spec/sdk/go v0.5.0
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1
 	github.com/spf13/cobra v1.9.1
 )
@@ -23,4 +23,4 @@ require (
 )
 
 // For local development - remove before release
-replace github.com/agentplexus/multi-agent-spec/sdk/go => ../../sdk/go
+replace github.com/plexusone/multi-agent-spec/sdk/go => ../../sdk/go

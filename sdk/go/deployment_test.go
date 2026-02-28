@@ -223,7 +223,7 @@ func TestKubernetesConfig(t *testing.T) {
 	config := KubernetesConfig{
 		Namespace:     "multi-agent",
 		HelmChart:     true,
-		ImageRegistry: "ghcr.io/agentplexus",
+		ImageRegistry: "ghcr.io/plexusone",
 		ResourceLimits: &ResourceLimits{
 			CPU:    "1000m",
 			Memory: "1Gi",

@@ -6,12 +6,12 @@ import (
 	"io"
 	"os"
 
-	multiagentspec "github.com/agentplexus/multi-agent-spec/sdk/go"
+	multiagentspec "github.com/plexusone/multi-agent-spec/sdk/go"
 	"github.com/santhosh-tekuri/jsonschema/v6"
 	"github.com/spf13/cobra"
 )
 
-const defaultSchemaURL = "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json"
+const defaultSchemaURL = "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/report/team-report.schema.json"
 
 var (
 	format       string

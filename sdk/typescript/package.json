@@ -1,5 +1,5 @@
 {
-  "name": "@agentplexus/multi-agent-spec",
+  "name": "@plexusone/multi-agent-spec",
   "version": "1.0.0",
   "description": "TypeScript SDK for Multi-Agent Spec - Zod schemas and types for multi-agent system definitions",
   "type": "module",
@@ -37,17 +37,17 @@
     "bedrock",
     "agentcore"
   ],
-  "author": "AgentPlexus",
+  "author": "PlexusOne",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentplexus/multi-agent-spec.git",
+    "url": "https://github.com/plexusone/multi-agent-spec.git",
     "directory": "sdk/typescript"
   },
   "bugs": {
-    "url": "https://github.com/agentplexus/multi-agent-spec/issues"
+    "url": "https://github.com/plexusone/multi-agent-spec/issues"
   },
-  "homepage": "https://github.com/agentplexus/multi-agent-spec#readme",
+  "homepage": "https://github.com/plexusone/multi-agent-spec#readme",
   "dependencies": {
     "zod": "^3.23.0"
   },

@@ -5,7 +5,7 @@
  *
  * @example
  * ```typescript
- * import { AgentSchema, TeamSchema, DeploymentSchema } from '@agentplexus/multi-agent-spec';
+ * import { AgentSchema, TeamSchema, DeploymentSchema } from '@plexusone/multi-agent-spec';
  *
  * // Validate an agent definition
  * const agent = AgentSchema.parse({
@@ -16,7 +16,7 @@
  * });
  *
  * // TypeScript types are inferred
- * import type { Agent, Team, Deployment } from '@agentplexus/multi-agent-spec';
+ * import type { Agent, Team, Deployment } from '@plexusone/multi-agent-spec';
  * ```
  */
 

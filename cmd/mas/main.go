@@ -13,7 +13,7 @@ package main
 import (
 	"os"
 
-	"github.com/agentplexus/multi-agent-spec/cmd/mas/cmd"
+	"github.com/plexusone/multi-agent-spec/cmd/mas/cmd"
 )
 
 func main() {

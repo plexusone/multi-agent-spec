@@ -52,7 +52,7 @@ Create `specs/teams/analysis-team.json`:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/orchestration/team.schema.json",
+  "$schema": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/orchestration/team.schema.json",
   "name": "analysis-team",
   "description": "Code analysis team",
   "agents": ["analyzer"],
@@ -74,7 +74,7 @@ Create `specs/deployments/local.json`:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/deployment/deployment.schema.json",
+  "$schema": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/deployment/deployment.schema.json",
   "team": "analysis-team",
   "targets": [
     {

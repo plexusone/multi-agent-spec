@@ -10,7 +10,7 @@ readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.10"
 authors = [
-    { name = "AgentPlexus" }
+    { name = "PlexusOne" }
 ]
 keywords = [
     "multi-agent",
@@ -46,10 +46,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/agentplexus/multi-agent-spec"
-Documentation = "https://github.com/agentplexus/multi-agent-spec#readme"
-Repository = "https://github.com/agentplexus/multi-agent-spec.git"
-Issues = "https://github.com/agentplexus/multi-agent-spec/issues"
+Homepage = "https://github.com/plexusone/multi-agent-spec"
+Documentation = "https://github.com/plexusone/multi-agent-spec#readme"
+Repository = "https://github.com/plexusone/multi-agent-spec.git"
+Issues = "https://github.com/plexusone/multi-agent-spec/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/multi_agent_spec"]

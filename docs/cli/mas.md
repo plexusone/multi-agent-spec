@@ -5,7 +5,7 @@ Command-line interface for multi-agent-spec.
 ## Installation
 
 ```bash
-go install github.com/agentplexus/multi-agent-spec/cmd/mas@latest
+go install github.com/plexusone/multi-agent-spec/cmd/mas@latest
 ```
 
 ## Commands

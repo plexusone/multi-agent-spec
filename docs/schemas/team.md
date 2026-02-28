@@ -5,7 +5,7 @@ Defines multi-agent teams with workflow orchestration.
 ## Schema URL
 
 ```
-https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/orchestration/team.schema.json
+https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/orchestration/team.schema.json
 ```
 
 ## Structure
@@ -334,7 +334,7 @@ Configuration for self-directed workflows:
 ## Go SDK
 
 ```go
-import mas "github.com/agentplexus/multi-agent-spec/sdk/go"
+import mas "github.com/plexusone/multi-agent-spec/sdk/go"
 
 // Deterministic workflow
 team := mas.NewTeam("release-team", "1.0.0").

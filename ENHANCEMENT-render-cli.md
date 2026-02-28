@@ -111,7 +111,7 @@ cd cmd/mas
 go build -o mas .
 
 # Or install globally
-go install github.com/agentplexus/multi-agent-spec/cmd/mas@latest
+go install github.com/plexusone/multi-agent-spec/cmd/mas@latest
 ```
 
 ### Integration with Agent Teams

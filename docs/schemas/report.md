@@ -5,7 +5,7 @@ Defines structured output from multi-agent team executions using Go/No-Go semant
 ## Schema URL
 
 ```
-https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json
+https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/report/team-report.schema.json
 ```
 
 ## Structure
@@ -127,7 +127,7 @@ Status answers "did it pass?" — Severity answers "how bad is it?"
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json",
+  "$schema": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/report/team-report.schema.json",
   "title": "RELEASE VALIDATION REPORT",
   "project": "my-app",
   "version": "v1.2.0",
@@ -190,7 +190,7 @@ mas render report.json --format=narrative
 ## Go SDK
 
 ```go
-import mas "github.com/agentplexus/multi-agent-spec/sdk/go"
+import mas "github.com/plexusone/multi-agent-spec/sdk/go"
 
 report := &mas.TeamReport{
     Project: "my-app",

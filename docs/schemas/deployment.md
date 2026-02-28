@@ -5,7 +5,7 @@ Defines platform-specific deployment configurations for multi-agent teams.
 ## Schema URL
 
 ```
-https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/deployment/deployment.schema.json
+https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/deployment/deployment.schema.json
 ```
 
 ## Structure
@@ -203,7 +203,7 @@ The `prefix` field is applied to all agent names, filenames, and steering files 
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/deployment/deployment.schema.json",
+  "$schema": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/deployment/deployment.schema.json",
   "team": "release-team",
   "targets": [
     {
@@ -294,7 +294,7 @@ The `prefix` field is applied to all agent names, filenames, and steering files 
 ## Go SDK
 
 ```go
-import mas "github.com/agentplexus/multi-agent-spec/sdk/go"
+import mas "github.com/plexusone/multi-agent-spec/sdk/go"
 
 // Deterministic deployment
 deployment := mas.NewDeployment("release-team").

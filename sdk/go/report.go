@@ -369,7 +369,7 @@ func AggregateResults(results []AgentResult, project, version, phase string) *Te
 	}
 
 	report := &TeamReport{
-		Schema:      "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json",
+		Schema:      "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/report/team-report.schema.json",
 		Project:     project,
 		Version:     version,
 		Target:      version,

@@ -5,7 +5,7 @@ Defines individual AI agents with their capabilities, tools, and tasks.
 ## Schema URL
 
 ```
-https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/agent/agent.schema.json
+https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/agent/agent.schema.json
 ```
 
 ## Structure
@@ -226,7 +226,7 @@ Reference namespaced agents in teams:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/agent/agent.schema.json",
+  "$schema": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/agent/agent.schema.json",
   "name": "security-scanner",
   "description": "Scans code for security vulnerabilities",
   "model": "sonnet",
@@ -376,7 +376,7 @@ You implement frontend features as delegated by the architect.
 ## Go SDK
 
 ```go
-import mas "github.com/agentplexus/multi-agent-spec/sdk/go"
+import mas "github.com/plexusone/multi-agent-spec/sdk/go"
 
 // Basic agent
 agent := mas.NewAgent("security-scanner", "Scans code for vulnerabilities").

@@ -1,8 +1,8 @@
 site_name: Multi-Agent Spec
 site_description: Portable specification format for multi-agent AI systems
-site_url: https://agentplexus.github.io/multi-agent-spec/
-repo_url: https://github.com/agentplexus/multi-agent-spec
-repo_name: agentplexus/multi-agent-spec
+site_url: https://plexusone.github.io/multi-agent-spec/
+repo_url: https://github.com/plexusone/multi-agent-spec
+repo_name: plexusone/multi-agent-spec
 
 theme:
   name: material
@@ -56,6 +56,7 @@ nav:
   - Examples:
       - Stats Agent Team: examples/stats-agent-team.md
   - Releases:
+      - v0.7.0: releases/v0.7.0.md
       - v0.6.0: releases/v0.6.0.md
       - v0.5.0: releases/v0.5.0.md
       - v0.4.0: releases/v0.4.0.md
@@ -66,4 +67,4 @@ nav:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/agentplexus/multi-agent-spec
+      link: https://github.com/plexusone/multi-agent-spec

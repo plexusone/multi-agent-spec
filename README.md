@@ -717,7 +717,7 @@ Canonical tool names map to platform-specific identifiers:
 ### Go SDK
 
 ```bash
-go get github.com/agentplexus/multi-agent-spec/sdk/go@v0.8.0
+go get github.com/plexusone/multi-agent-spec/sdk/go@v0.8.0
 ```
 
 **Note for maintainers:** The Go module is located in `sdk/go/`. Per [Go module versioning](https://go.dev/ref/mod#vcs-version), tags for nested modules must be prefixed with the module path:
@@ -736,7 +736,7 @@ pip install multi-agent-spec
 ### TypeScript SDK
 
 ```bash
-npm install @agentplexus/multi-agent-spec
+npm install @plexusone/multi-agent-spec
 ```
 
 ## Usage with aiassistkit
@@ -766,9 +766,9 @@ See the [`examples/`](examples/) directory for complete examples:
 
 ## Related Projects
 
-- [aiassistkit](https://github.com/agentplexus/aiassistkit) - Agent generation and deployment tooling
-- [agentkit](https://github.com/agentplexus/agentkit) - Multi-platform agent runtime
-- [stats-agent-team](https://github.com/agentplexus/stats-agent-team) - Reference implementation
+- [aiassistkit](https://github.com/plexusone/aiassistkit) - Agent generation and deployment tooling
+- [agentkit](https://github.com/plexusone/agentkit) - Multi-platform agent runtime
+- [stats-agent-team](https://github.com/plexusone/stats-agent-team) - Reference implementation
 
 ## License
 

@@ -5,13 +5,13 @@ The Go SDK provides typed structs and utilities for working with multi-agent-spe
 ## Installation
 
 ```bash
-go get github.com/agentplexus/multi-agent-spec/sdk/go@latest
+go get github.com/plexusone/multi-agent-spec/sdk/go@latest
 ```
 
 ## Import
 
 ```go
-import mas "github.com/agentplexus/multi-agent-spec/sdk/go"
+import mas "github.com/plexusone/multi-agent-spec/sdk/go"
 ```
 
 ## Core Types

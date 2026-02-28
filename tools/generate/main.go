@@ -13,7 +13,7 @@ import (
 
 	"github.com/invopop/jsonschema"
 
-	multiagentspec "github.com/agentplexus/multi-agent-spec/sdk/go"
+	multiagentspec "github.com/plexusone/multi-agent-spec/sdk/go"
 )
 
 func main() {
@@ -33,7 +33,7 @@ func run() error {
 		filepath.Join(outputDir, "agent", "agent.schema.json"),
 		"Multi-Agent Spec - Agent Definition",
 		"Schema for defining an AI agent in a multi-agent system",
-		"https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/agent/agent.schema.json",
+		"https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/agent/agent.schema.json",
 	); err != nil {
 		return fmt.Errorf("generating agent schema: %w", err)
 	}
@@ -44,7 +44,7 @@ func run() error {
 		filepath.Join(outputDir, "orchestration", "team.schema.json"),
 		"Multi-Agent Spec - Team Definition",
 		"Schema for defining a team of AI agents with orchestration",
-		"https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/orchestration/team.schema.json",
+		"https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/orchestration/team.schema.json",
 	); err != nil {
 		return fmt.Errorf("generating team schema: %w", err)
 	}
@@ -55,7 +55,7 @@ func run() error {
 		filepath.Join(outputDir, "deployment", "deployment.schema.json"),
 		"Multi-Agent Spec - Deployment Definition",
 		"Schema for defining deployment targets for multi-agent systems",
-		"https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/deployment/deployment.schema.json",
+		"https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/deployment/deployment.schema.json",
 	); err != nil {
 		return fmt.Errorf("generating deployment schema: %w", err)
 	}
@@ -66,7 +66,7 @@ func run() error {
 		filepath.Join(outputDir, "report", "team-report.schema.json"),
 		"Multi-Agent Spec - Team Report",
 		"Schema for team validation reports",
-		"https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/report/team-report.schema.json",
+		"https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/report/team-report.schema.json",
 	); err != nil {
 		return fmt.Errorf("generating team-report schema: %w", err)
 	}

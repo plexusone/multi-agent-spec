@@ -28,7 +28,7 @@ See [Team Schema](team.md) for details on each workflow type.
 All schemas are hosted on GitHub:
 
 ```
-https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/{category}/{name}.schema.json
+https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/{category}/{name}.schema.json
 ```
 
 | Schema | URL |
@@ -46,7 +46,7 @@ Add `$schema` to enable validation:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/agent/agent.schema.json",
+  "$schema": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/agent/agent.schema.json",
   "name": "my-agent",
   "description": "My agent description"
 }
@@ -61,15 +61,15 @@ Add to `.vscode/settings.json`:
   "json.schemas": [
     {
       "fileMatch": ["**/agents/*.json"],
-      "url": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/agent/agent.schema.json"
+      "url": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/agent/agent.schema.json"
     },
     {
       "fileMatch": ["**/teams/*.json"],
-      "url": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/orchestration/team.schema.json"
+      "url": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/orchestration/team.schema.json"
     },
     {
       "fileMatch": ["**/deployments/*.json"],
-      "url": "https://raw.githubusercontent.com/agentplexus/multi-agent-spec/main/schema/deployment/deployment.schema.json"
+      "url": "https://raw.githubusercontent.com/plexusone/multi-agent-spec/main/schema/deployment/deployment.schema.json"
     }
   ]
 }
@@ -117,7 +117,7 @@ For inter-agent communication:
 The Go SDK provides typed structs for all schemas:
 
 ```go
-import mas "github.com/agentplexus/multi-agent-spec/sdk/go"
+import mas "github.com/plexusone/multi-agent-spec/sdk/go"
 
 // Basic agent
 agent := mas.NewAgent("analyzer", "Analyzes code").
