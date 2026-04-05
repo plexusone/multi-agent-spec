@@ -10,10 +10,8 @@
       
       
       
-        <link rel="canonical" href="https://plexusone.github.io/multi-agent-spec/releases/v0.1.0/">
+        <link rel="canonical" href="https://plexusone.github.io/multi-agent-spec/guides/github-pr-review/">
       
-      
-        <link rel="prev" href="../v0.2.0/">
       
       
       
@@ -22,7 +20,7 @@
     
     
       
-        <title>v0.1.0 - Multi-Agent Spec</title>
+        <title>GitHub PR Review with Claude Code - Multi-Agent Spec</title>
       
     
     
@@ -76,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#release-notes-v010" class="md-skip">
+        <a href="#github-pr-review-with-claude-code" class="md-skip">
           Skip to content
         </a>
       
@@ -117,7 +115,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              v0.1.0
+              GitHub PR Review with Claude Code
             
           </span>
         </div>
@@ -773,8 +771,6 @@
       
   
   
-    
-  
   
   
     
@@ -787,11 +783,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_7" >
         
           
           <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
@@ -807,7 +805,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Releases
@@ -821,7 +819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v0.7.0/" class="md-nav__link">
+      <a href="../../releases/v0.7.0/" class="md-nav__link">
         
   
   
@@ -844,7 +842,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v0.6.0/" class="md-nav__link">
+      <a href="../../releases/v0.6.0/" class="md-nav__link">
         
   
   
@@ -867,7 +865,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v0.5.0/" class="md-nav__link">
+      <a href="../../releases/v0.5.0/" class="md-nav__link">
         
   
   
@@ -890,7 +888,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v0.4.0/" class="md-nav__link">
+      <a href="../../releases/v0.4.0/" class="md-nav__link">
         
   
   
@@ -913,7 +911,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v0.3.0/" class="md-nav__link">
+      <a href="../../releases/v0.3.0/" class="md-nav__link">
         
   
   
@@ -936,7 +934,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../v0.2.0/" class="md-nav__link">
+      <a href="../../releases/v0.2.0/" class="md-nav__link">
         
   
   
@@ -956,32 +954,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    v0.1.0
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../releases/v0.1.0/" class="md-nav__link">
         
   
   
@@ -992,182 +968,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#highlights" class="md-nav__link">
-    <span class="md-ellipsis">
-      Highlights
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whats-new" class="md-nav__link">
-    <span class="md-ellipsis">
-      What's New
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="What&#39;s New">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#json-schemas" class="md-nav__link">
-    <span class="md-ellipsis">
-      JSON Schemas
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#go-sdk" class="md-nav__link">
-    <span class="md-ellipsis">
-      Go SDK
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python-sdk" class="md-nav__link">
-    <span class="md-ellipsis">
-      Python SDK
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typescript-sdk" class="md-nav__link">
-    <span class="md-ellipsis">
-      TypeScript SDK
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-stats-agent-team" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example: Stats Agent Team
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#supported-platforms" class="md-nav__link">
-    <span class="md-ellipsis">
-      Supported Platforms
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#model-mappings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Model Mappings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tool-mappings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tool Mappings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Installation">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#go" class="md-nav__link">
-    <span class="md-ellipsis">
-      Go
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#python" class="md-nav__link">
-    <span class="md-ellipsis">
-      Python
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typescript" class="md-nav__link">
-    <span class="md-ellipsis">
-      TypeScript
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#related-projects" class="md-nav__link">
-    <span class="md-ellipsis">
-      Related Projects
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#license" class="md-nav__link">
-    <span class="md-ellipsis">
-      License
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1207,64 +1007,37 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#highlights" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
-      Highlights
+      Prerequisites
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#whats-new" class="md-nav__link">
-    <span class="md-ellipsis">
-      What's New
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="What&#39;s New">
+    <nav class="md-nav" aria-label="Prerequisites">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#json-schemas" class="md-nav__link">
+  <a href="#1-github-cli-gh" class="md-nav__link">
     <span class="md-ellipsis">
-      JSON Schemas
+      1. GitHub CLI (gh)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#go-sdk" class="md-nav__link">
+  <a href="#2-github-authentication" class="md-nav__link">
     <span class="md-ellipsis">
-      Go SDK
+      2. GitHub Authentication
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#python-sdk" class="md-nav__link">
+  <a href="#3-github-token-permissions" class="md-nav__link">
     <span class="md-ellipsis">
-      Python SDK
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typescript-sdk" class="md-nav__link">
-    <span class="md-ellipsis">
-      TypeScript SDK
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#example-stats-agent-team" class="md-nav__link">
-    <span class="md-ellipsis">
-      Example: Stats Agent Team
+      3. GitHub Token Permissions
     </span>
   </a>
   
@@ -1276,64 +1049,28 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#supported-platforms" class="md-nav__link">
+  <a href="#reviewing-a-pr" class="md-nav__link">
     <span class="md-ellipsis">
-      Supported Platforms
+      Reviewing a PR
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#model-mappings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Model Mappings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tool-mappings" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tool Mappings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#installation" class="md-nav__link">
-    <span class="md-ellipsis">
-      Installation
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Installation">
+    <nav class="md-nav" aria-label="Reviewing a PR">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#go" class="md-nav__link">
+  <a href="#method-1-direct-review-command" class="md-nav__link">
     <span class="md-ellipsis">
-      Go
+      Method 1: Direct Review Command
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#python" class="md-nav__link">
+  <a href="#method-2-step-by-step" class="md-nav__link">
     <span class="md-ellipsis">
-      Python
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#typescript" class="md-nav__link">
-    <span class="md-ellipsis">
-      TypeScript
+      Method 2: Step-by-Step
     </span>
   </a>
   
@@ -1345,18 +1082,93 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#related-projects" class="md-nav__link">
+  <a href="#review-actions" class="md-nav__link">
     <span class="md-ellipsis">
-      Related Projects
+      Review Actions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Review Actions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#adding-line-level-comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding Line-Level Comments
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-review-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Review Workflow
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#license" class="md-nav__link">
+  <a href="#troubleshooting" class="md-nav__link">
     <span class="md-ellipsis">
-      License
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resource-not-accessible-by-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      "Resource not accessible by integration"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#must-have-admin-rights-to-repository" class="md-nav__link">
+    <span class="md-ellipsis">
+      "Must have admin rights to Repository"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#not-found-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      "Not Found" Error
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Security Considerations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Related Commands
     </span>
   </a>
   
@@ -1381,181 +1193,207 @@
   
 
 
-<h1 id="release-notes-v010">Release Notes: v0.1.0<a class="headerlink" href="#release-notes-v010" title="Permanent link">&para;</a></h1>
-<p><strong>Release Date:</strong> 2026-01-17</p>
-<h2 id="highlights">Highlights<a class="headerlink" href="#highlights" title="Permanent link">&para;</a></h2>
-<p>Initial release of Multi-Agent Spec - a specification for defining multi-agent AI systems with platform-agnostic agent definitions and deployment configurations.</p>
-<h2 id="whats-new">What's New<a class="headerlink" href="#whats-new" title="Permanent link">&para;</a></h2>
-<h3 id="json-schemas">JSON Schemas<a class="headerlink" href="#json-schemas" title="Permanent link">&para;</a></h3>
-<ul>
-<li><strong>Agent Schema</strong> (<code>schema/agent/agent.schema.json</code>): Define individual agents with capabilities, tools, and instructions using Hugo-compatible Markdown with YAML front matter</li>
-<li><strong>Team Schema</strong> (<code>schema/orchestration/team.schema.json</code>): Define agent teams with orchestration patterns (sequential, parallel, orchestrated)</li>
-<li><strong>Deployment Schema</strong> (<code>schema/deployment/deployment.schema.json</code>): Define target platforms and configurations</li>
-</ul>
-<h3 id="go-sdk">Go SDK<a class="headerlink" href="#go-sdk" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Canonical types for Agent, Team, and Deployment</li>
-<li>Model mappings for Claude Code, Kiro CLI, and AWS Bedrock</li>
-<li>Tool mappings for Kiro CLI and AgentKit</li>
-<li>Builder pattern for constructing agents and teams</li>
-<li>Full test coverage (44 tests)</li>
-</ul>
-<h3 id="python-sdk">Python SDK<a class="headerlink" href="#python-sdk" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Pydantic models for Agent, Team, and Deployment</li>
-<li>Type-safe configuration building</li>
-</ul>
-<h3 id="typescript-sdk">TypeScript SDK<a class="headerlink" href="#typescript-sdk" title="Permanent link">&para;</a></h3>
-<ul>
-<li>Zod schemas for runtime validation</li>
-<li>TypeScript type definitions</li>
-</ul>
-<h3 id="example-stats-agent-team">Example: Stats Agent Team<a class="headerlink" href="#example-stats-agent-team" title="Permanent link">&para;</a></h3>
-<p>Complete multi-platform example demonstrating:</p>
-<ul>
-<li>Canonical agent definitions in Markdown</li>
-<li>Claude Code sub-agents (<code>.claude/agents/</code>)</li>
-<li>Kiro CLI agents (<code>plugins/kiro/agents/</code>)</li>
-<li>AgentKit local config (<code>plugins/agentkit/</code>)</li>
-<li>AWS CDK deployment (<code>cdk/</code>)</li>
-</ul>
-<h2 id="supported-platforms">Supported Platforms<a class="headerlink" href="#supported-platforms" title="Permanent link">&para;</a></h2>
+<h1 id="github-pr-review-with-claude-code">GitHub PR Review with Claude Code<a class="headerlink" href="#github-pr-review-with-claude-code" title="Permanent link">&para;</a></h1>
+<p>This guide explains how to have Claude Code review GitHub Pull Requests and post review comments directly to the PR.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<h3 id="1-github-cli-gh">1. GitHub CLI (gh)<a class="headerlink" href="#1-github-cli-gh" title="Permanent link">&para;</a></h3>
+<p>The GitHub CLI is required for Claude Code to interact with GitHub PRs.</p>
+<p><strong>Installation:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># macOS</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>brew<span class="w"> </span>install<span class="w"> </span>gh
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Ubuntu/Debian</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>gh
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Windows</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>winget<span class="w"> </span>install<span class="w"> </span>GitHub.cli
+</code></pre></div>
+<p><strong>Verify installation:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gh<span class="w"> </span>--version
+</code></pre></div>
+<h3 id="2-github-authentication">2. GitHub Authentication<a class="headerlink" href="#2-github-authentication" title="Permanent link">&para;</a></h3>
+<p>Authenticate the GitHub CLI with your account:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>gh<span class="w"> </span>auth<span class="w"> </span>login
+</code></pre></div>
+<p>Follow the prompts to authenticate via browser or token.</p>
+<h3 id="3-github-token-permissions">3. GitHub Token Permissions<a class="headerlink" href="#3-github-token-permissions" title="Permanent link">&para;</a></h3>
+<p>When authenticating, the token needs specific scopes to review PRs:</p>
 <table>
 <thead>
 <tr>
-<th>Platform</th>
-<th>Priority</th>
-<th>Output Format</th>
+<th>Scope</th>
+<th>Purpose</th>
+<th>Required</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Claude Code</td>
-<td>P1</td>
-<td>Markdown</td>
+<td><code>repo</code></td>
+<td>Full access to private repositories</td>
+<td>Yes (for private repos)</td>
 </tr>
 <tr>
-<td>Kiro CLI</td>
-<td>P1</td>
-<td>JSON</td>
+<td><code>public_repo</code></td>
+<td>Access to public repositories only</td>
+<td>Yes (for public repos only)</td>
 </tr>
 <tr>
-<td>AWS AgentCore</td>
-<td>P1</td>
-<td>CDK/Pulumi</td>
-</tr>
-<tr>
-<td>AgentKit Local</td>
-<td>P1</td>
-<td>JSON</td>
+<td><code>write:discussion</code></td>
+<td>Create/edit PR comments and reviews</td>
+<td>Yes</td>
 </tr>
 </tbody>
 </table>
-<h2 id="model-mappings">Model Mappings<a class="headerlink" href="#model-mappings" title="Permanent link">&para;</a></h2>
+<p><strong>For fine-grained tokens (recommended):</strong></p>
 <table>
 <thead>
 <tr>
-<th>Canonical</th>
-<th>Claude Code</th>
-<th>Kiro CLI</th>
-<th>AWS Bedrock</th>
+<th>Permission</th>
+<th>Access Level</th>
+<th>Purpose</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>haiku</code></td>
-<td><code>haiku</code></td>
-<td><code>claude-haiku-35</code></td>
-<td><code>anthropic.claude-3-haiku-*</code></td>
+<td>Pull requests</td>
+<td>Read and write</td>
+<td>View PR details, post reviews</td>
 </tr>
 <tr>
-<td><code>sonnet</code></td>
-<td><code>sonnet</code></td>
-<td><code>claude-sonnet-4</code></td>
-<td><code>anthropic.claude-3-5-sonnet-*</code></td>
+<td>Contents</td>
+<td>Read</td>
+<td>Read PR diff and changed files</td>
 </tr>
 <tr>
-<td><code>opus</code></td>
-<td><code>opus</code></td>
-<td><code>claude-opus-4</code></td>
-<td><code>anthropic.claude-3-opus-*</code></td>
+<td>Metadata</td>
+<td>Read</td>
+<td>Repository metadata</td>
 </tr>
 </tbody>
 </table>
-<h2 id="tool-mappings">Tool Mappings<a class="headerlink" href="#tool-mappings" title="Permanent link">&para;</a></h2>
+<p><strong>Check current authentication:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>gh<span class="w"> </span>auth<span class="w"> </span>status
+</code></pre></div>
+<p><strong>Refresh authentication with required scopes:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>gh<span class="w"> </span>auth<span class="w"> </span>refresh<span class="w"> </span>-s<span class="w"> </span>repo,write:discussion
+</code></pre></div>
+<h2 id="reviewing-a-pr">Reviewing a PR<a class="headerlink" href="#reviewing-a-pr" title="Permanent link">&para;</a></h2>
+<h3 id="method-1-direct-review-command">Method 1: Direct Review Command<a class="headerlink" href="#method-1-direct-review-command" title="Permanent link">&para;</a></h3>
+<p>Ask Claude Code to review a PR by number or URL:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Review PR #123 and post a code review comment
+</code></pre></div>
+<p>or</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Review https://github.com/owner/repo/pull/123 and comment on it
+</code></pre></div>
+<h3 id="method-2-step-by-step">Method 2: Step-by-Step<a class="headerlink" href="#method-2-step-by-step" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>View PR details:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>gh<span class="w"> </span>pr<span class="w"> </span>view<span class="w"> </span><span class="m">123</span><span class="w"> </span>--json<span class="w"> </span>title,body,author,files,commits
+</code></pre></div>
+<ol>
+<li><strong>View the diff:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>gh<span class="w"> </span>pr<span class="w"> </span>diff<span class="w"> </span><span class="m">123</span>
+</code></pre></div>
+<ol>
+<li><strong>Post a review:</strong></li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>gh<span class="w"> </span>pr<span class="w"> </span>review<span class="w"> </span><span class="m">123</span><span class="w"> </span>--approve<span class="w"> </span>--body<span class="w"> </span><span class="s2">&quot;LGTM! Code looks good.&quot;</span>
+</code></pre></div>
+<p>or with comments:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>gh<span class="w"> </span>pr<span class="w"> </span>review<span class="w"> </span><span class="m">123</span><span class="w"> </span>--comment<span class="w"> </span>--body<span class="w"> </span><span class="s2">&quot;Review comments here...&quot;</span>
+</code></pre></div>
+<p>or request changes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>gh<span class="w"> </span>pr<span class="w"> </span>review<span class="w"> </span><span class="m">123</span><span class="w"> </span>--request-changes<span class="w"> </span>--body<span class="w"> </span><span class="s2">&quot;Changes needed...&quot;</span>
+</code></pre></div>
+<h2 id="review-actions">Review Actions<a class="headerlink" href="#review-actions" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Canonical</th>
-<th>Kiro CLI</th>
-<th>AgentKit</th>
+<th>Action</th>
+<th>Command</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>WebSearch</code></td>
-<td><code>web_search</code></td>
-<td><code>shell</code></td>
+<td>Approve</td>
+<td><code>gh pr review N --approve</code></td>
+<td>Approve the PR</td>
 </tr>
 <tr>
-<td><code>WebFetch</code></td>
-<td><code>web_fetch</code></td>
-<td><code>shell</code></td>
+<td>Comment</td>
+<td><code>gh pr review N --comment</code></td>
+<td>Add review without approval</td>
 </tr>
 <tr>
-<td><code>Read</code></td>
-<td><code>read</code></td>
-<td><code>read</code></td>
+<td>Request Changes</td>
+<td><code>gh pr review N --request-changes</code></td>
+<td>Request modifications</td>
 </tr>
 <tr>
-<td><code>Write</code></td>
-<td><code>write</code></td>
-<td><code>write</code></td>
-</tr>
-<tr>
-<td><code>Glob</code></td>
-<td><code>glob</code></td>
-<td><code>glob</code></td>
-</tr>
-<tr>
-<td><code>Grep</code></td>
-<td><code>grep</code></td>
-<td><code>grep</code></td>
-</tr>
-<tr>
-<td><code>Bash</code></td>
-<td><code>bash</code></td>
-<td><code>shell</code></td>
-</tr>
-<tr>
-<td><code>Edit</code></td>
-<td><code>edit</code></td>
-<td><code>write</code></td>
-</tr>
-<tr>
-<td><code>Task</code></td>
-<td><code>task</code></td>
-<td><code>shell</code></td>
+<td>Add Line Comment</td>
+<td><code>gh api</code> (see below)</td>
+<td>Comment on specific lines</td>
 </tr>
 </tbody>
 </table>
-<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
-<h3 id="go">Go<a class="headerlink" href="#go" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>go<span class="w"> </span>get<span class="w"> </span>github.com/plexusone/multi-agent-spec/sdk/go@v0.1.0
+<h3 id="adding-line-level-comments">Adding Line-Level Comments<a class="headerlink" href="#adding-line-level-comments" title="Permanent link">&para;</a></h3>
+<p>For inline comments on specific lines:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>gh<span class="w"> </span>api<span class="w"> </span>repos/<span class="o">{</span>owner<span class="o">}</span>/<span class="o">{</span>repo<span class="o">}</span>/pulls/<span class="o">{</span>pr<span class="o">}</span>/comments<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">body</span><span class="o">=</span><span class="s2">&quot;Comment text&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">commit_id</span><span class="o">=</span><span class="s2">&quot;SHA&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">path</span><span class="o">=</span><span class="s2">&quot;path/to/file.go&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">  </span>-F<span class="w"> </span><span class="nv">line</span><span class="o">=</span><span class="m">42</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">  </span>-f<span class="w"> </span><span class="nv">side</span><span class="o">=</span><span class="s2">&quot;RIGHT&quot;</span>
 </code></pre></div>
-<h3 id="python">Python<a class="headerlink" href="#python" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>multi-agent-spec
+<h2 id="example-review-workflow">Example Review Workflow<a class="headerlink" href="#example-review-workflow" title="Permanent link">&para;</a></h2>
+<p>When you ask Claude Code to review a PR, it will:</p>
+<ol>
+<li><strong>Fetch PR metadata</strong> — Title, description, author, branch info</li>
+<li><strong>Fetch the diff</strong> — All changed files and their modifications</li>
+<li><strong>Analyze changes</strong> — Security issues, code quality, best practices</li>
+<li><strong>Generate review</strong> — Summary with specific findings</li>
+<li><strong>Post review</strong> — Submit the review to GitHub</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="resource-not-accessible-by-integration">"Resource not accessible by integration"<a class="headerlink" href="#resource-not-accessible-by-integration" title="Permanent link">&para;</a></h3>
+<p>Your token lacks required permissions. Re-authenticate:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>gh<span class="w"> </span>auth<span class="w"> </span>refresh<span class="w"> </span>-s<span class="w"> </span>repo,write:discussion
 </code></pre></div>
-<h3 id="typescript">TypeScript<a class="headerlink" href="#typescript" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>npm<span class="w"> </span>install<span class="w"> </span>@plexusone/multi-agent-spec
-</code></pre></div>
-<h2 id="related-projects">Related Projects<a class="headerlink" href="#related-projects" title="Permanent link">&para;</a></h2>
+<h3 id="must-have-admin-rights-to-repository">"Must have admin rights to Repository"<a class="headerlink" href="#must-have-admin-rights-to-repository" title="Permanent link">&para;</a></h3>
+<p>For organization repos, ensure:</p>
 <ul>
-<li><a href="https://github.com/plexusone/aiassistkit">aiassistkit</a> - Agent generation and deployment tooling</li>
-<li><a href="https://github.com/plexusone/agentkit">agentkit</a> - Multi-platform agent runtime</li>
+<li>You have write access to the repository</li>
+<li>Organization allows third-party access (if using OAuth app)</li>
 </ul>
-<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
-<p>MIT</p>
+<h3 id="not-found-error">"Not Found" Error<a class="headerlink" href="#not-found-error" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Verify the PR number/URL is correct</li>
+<li>Check you have access to the repository</li>
+<li>For private repos, ensure <code>repo</code> scope is granted</li>
+</ul>
+<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Claude Code only reads PR content for review purposes</li>
+<li>Review comments are posted under your GitHub identity</li>
+<li>Tokens are stored locally by the <code>gh</code> CLI</li>
+<li>Never share tokens or authenticate Claude Code with admin-level tokens</li>
+</ul>
+<h2 id="related-commands">Related Commands<a class="headerlink" href="#related-commands" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># List open PRs</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>gh<span class="w"> </span>pr<span class="w"> </span>list
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># Check out a PR locally</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>gh<span class="w"> </span>pr<span class="w"> </span>checkout<span class="w"> </span><span class="m">123</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># View PR checks/status</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>gh<span class="w"> </span>pr<span class="w"> </span>checks<span class="w"> </span><span class="m">123</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1"># Merge a PR (after approval)</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>gh<span class="w"> </span>pr<span class="w"> </span>merge<span class="w"> </span><span class="m">123</span>
+</code></pre></div>
 
 
 
